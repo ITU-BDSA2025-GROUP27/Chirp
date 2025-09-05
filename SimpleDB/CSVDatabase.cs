@@ -1,9 +1,9 @@
-using SimpleDB;
 using CsvHelper;
 using System.Globalization;
 
-sealed class CSVDatabase<T> : IDatabaseRepository<T>
+namespace SimpleDB;
 
+public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
     private readonly string _filePath;
     public CSVDatabase(string filePath)
