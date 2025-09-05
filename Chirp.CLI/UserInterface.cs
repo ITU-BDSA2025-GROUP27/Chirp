@@ -13,6 +13,11 @@ public static class UserInterface
         Console.WriteLine("-------------");
     }
 
+    public static void PrintMissingMessageError()
+    {
+        Console.WriteLine("Write a message to Cheep!");
+    }
+
     public static void PrintCheep(Cheep cheep)
     {
         Console.WriteLine($"{cheep.Author} @ {FromUnixTimeToDateTime(cheep.Timestamp)} : {cheep.Message}");
