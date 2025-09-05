@@ -1,9 +1,10 @@
 ﻿using SimpleDB;
 
+namespace Chirp.CLI;
+
 class Program
 {
     public static string file = "data/chirp_cli_db.csv";
-    public static string timeFormat = "MM/dd/yy HH:mm:ss";
     public static CSVDatabase<Cheep> db = new CSVDatabase<Cheep>(file);
 
     static void Main(string[] args)
@@ -12,11 +13,7 @@ class Program
         // If no args, print usage message
         if (args.Length == 0)
         {
-            Console.WriteLine("-------------");
-            Console.WriteLine("Usage:");
-            Console.WriteLine("dotnet run -- read | Prints all Cheeps");
-            Console.WriteLine("dotnet run -- cheep <message> | Cheep a message");
-            Console.WriteLine("-------------");
+            UserInterface.PrintUsage();
         }
         else if (args[0] == "read")
         {
@@ -26,7 +23,8 @@ class Program
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Write a message to Cheep!");
+                UserInterface.PrintMissingMessageError();
+                return;
             }
             WriteCheep(args[1]);
         }
@@ -36,7 +34,7 @@ class Program
     {
         foreach (var r in db.Read())
         {
-            Console.WriteLine($"{r.Author} @ {FromUnixTimeToDateTime(r.Timestamp)} : {r.Message}");
+            UserInterface.PrintCheep(r);
         }
     }
 
@@ -55,16 +53,10 @@ class Program
         return Environment.UserName;
     }
 
-    static string FromUnixTimeToDateTime(long timestamp)
-    {
-        var dto = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
-        return dto.ToString(timeFormat);
-    }
-
     static long FromCurrentDateTimetoUnixTime()
     {
         return ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
     }
-
-    public record Cheep(string Author, string Message, long Timestamp);
 }
+
+public record Cheep(string Author, string Message, long Timestamp);
