@@ -1,4 +1,7 @@
-﻿class Program
+﻿using CsvHelper;
+using System.Globalization;
+
+class Program
 {
     public static string file = "data/chirp_cli_db.csv";
     public static string timeFormat = "MM/dd/yy HH:mm:ss";
@@ -31,41 +34,26 @@
     static void ReadCheepsFromCSV()
     {
         using StreamReader sr = new(file);
+        using CsvReader cr = new(sr, CultureInfo.InvariantCulture);
 
-        _ = sr.ReadLine(); // Skip header
-        while (!sr.EndOfStream)
+        cr.GetRecords<Cheep>();
+        foreach (var r in cr.GetRecords<Cheep>())
         {
-            string? line = sr.ReadLine();
-            string cheep = ParseCheepLine(line);
-
-            Console.WriteLine(cheep);
+            Console.WriteLine($"{r.Author} @ {FromUnixTimeToDateTime(r.Timestamp)} : {r.Message}");
         }
     }
 
     static void WriteCheepToCSV(string message)
     {
-        string author = GetUserName();
-        string timestamp = FromCurrentDateTimetoUnixTime();
-
-        string cheep = $"{author},\"{message}\",{timestamp}";
-
         using StreamWriter sw = File.AppendText(file);
-        sw.WriteLine(cheep);
+        using CsvWriter cw = new(sw, CultureInfo.InvariantCulture);
 
-    }
+        string author = GetUserName();
+        long timestamp = FromCurrentDateTimetoUnixTime();
 
-    /*
-    * Utils
-    */
-    static string ParseCheepLine(string line)
-    {
-        string[] cheepData = line.Split('"'); // Split by " so commas inside the message aren't treated as separators
+        Cheep cheep = new(author, message, timestamp);
 
-        string author = cheepData[0].TrimEnd(',');
-        string message = cheepData[1];
-        string timestamp = FromUnixTimeToDateTime(cheepData[2].TrimStart(','));
-
-        return $"{author} @ {timestamp}: {message}";
+        cw.WriteRecord(cheep);
     }
 
     static string GetUserName()
@@ -73,14 +61,16 @@
         return Environment.UserName;
     }
 
-    static string FromUnixTimeToDateTime(string timestamp)
+    static string FromUnixTimeToDateTime(long timestamp)
     {
-        var dto = DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime();
+        var dto = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
         return dto.ToString(timeFormat);
     }
 
-    static string FromCurrentDateTimetoUnixTime()
+    static long FromCurrentDateTimetoUnixTime()
     {
-        return ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds().ToString();
+        return ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
     }
+
+    public record Cheep(string Author, string Message, long Timestamp);
 }
