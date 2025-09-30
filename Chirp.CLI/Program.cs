@@ -1,4 +1,5 @@
 ﻿using SimpleDB;
+using DocoptNet;
 
 namespace Chirp.CLI;
 
@@ -9,24 +10,16 @@ class Program
 
     static void Main(string[] args)
     {
+        var arguments = new Docopt().Apply(UserInterface.usage, args, version: "1.0", exit: true)!;
 
-        // If no args, print usage message
-        if (args.Length == 0)
-        {
-            UserInterface.PrintUsage();
-        }
-        else if (args[0] == "read")
+        if (arguments["read"].IsTrue)
         {
             ReadCheeps();
         }
-        else if (args[0] == "cheep")
+        else if (arguments["cheep"].IsTrue)
         {
-            if (args.Length < 2)
-            {
-                UserInterface.PrintMissingMessageError();
-                return;
-            }
-            WriteCheep(args[1]);
+            string message = arguments["<message>"].ToString();
+            WriteCheep(message);
         }
     }
 
