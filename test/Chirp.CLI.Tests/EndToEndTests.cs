@@ -38,7 +38,7 @@ public class EndToEndTests : IDisposable
             csv.WriteRecords(cheeps);
         }
 
-        var db = new SimpleDB.CSVDatabase<Cheep>(_testFilePath);
+        var db = SimpleDB.CSVDatabase<Cheep>.Instance(_testFilePath);
 
         // Act
         using var sw = new StringWriter();
@@ -64,7 +64,7 @@ public class EndToEndTests : IDisposable
     public void Cheep_StoresMessageInDatabase()
     {
         // Arrange
-        var db = new SimpleDB.CSVDatabase<Cheep>(_testFilePath);
+        var db = SimpleDB.CSVDatabase<Cheep>.Instance(_testFilePath);
         string testMessage = "Hello!!!";
         string author = Environment.UserName;
 

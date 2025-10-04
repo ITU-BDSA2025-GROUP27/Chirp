@@ -23,7 +23,7 @@ public class CSVDatabaseTests : IDisposable
     public void Store_SingleRecord_RecordIsRetrieved()
     {
         // Arrange
-        var db = new CSVDatabase<TestRecord>(_testFilePath);
+        var db = CSVDatabase<TestRecord>.Instance(_testFilePath);
         var record = new TestRecord("Lukas", "Hello", 1759590488);
 
         // Act
@@ -41,7 +41,7 @@ public class CSVDatabaseTests : IDisposable
     public void Store_MultipleRecords_AllAreRetrieved()
     {
         // Arrange
-        var db = new CSVDatabase<TestRecord>(_testFilePath);
+        var db = CSVDatabase<TestRecord>.Instance(_testFilePath);
         var record1 = new TestRecord("Lukas", "Hello", 1759590523);
         var record2 = new TestRecord("John", "World", 1759590534);
 
