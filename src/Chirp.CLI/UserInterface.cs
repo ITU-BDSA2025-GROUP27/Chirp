@@ -9,7 +9,7 @@ public static class UserInterface
     public const string usage = @"Chirp CLI
 
 Usage:
-  chirp read
+  chirp read [<limit>]
   chirp cheep <message>
   chirp (-h | --help)
   chirp --version

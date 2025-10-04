@@ -16,7 +16,14 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         using StreamReader sr = new(_filePath);
         using CsvReader cr = new(sr, CultureInfo.InvariantCulture);
 
-        return cr.GetRecords<T>().ToList();
+        var records = cr.GetRecords<T>();
+
+        if (limit.HasValue)
+        {
+            return records.Take(limit.Value).ToList();
+        }
+
+        return records.ToList();
     }
 
     public void Store(T record)

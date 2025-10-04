@@ -14,7 +14,12 @@ public class Program
 
         if (arguments["read"].IsTrue)
         {
-            ReadCheeps();
+            int? limit = null;
+            if (arguments["<limit>"].Value != null)
+            {
+                limit = int.Parse(arguments["<limit>"].ToString());
+            }
+            ReadCheeps(limit);
         }
         else if (arguments["cheep"].IsTrue)
         {
@@ -23,9 +28,9 @@ public class Program
         }
     }
 
-    static void ReadCheeps()
+    static void ReadCheeps(int? limit = null)
     {
-        foreach (var r in db.Read())
+        foreach (var r in db.Read(limit))
         {
             UserInterface.PrintCheep(r);
         }
