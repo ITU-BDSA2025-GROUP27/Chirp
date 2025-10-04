@@ -34,7 +34,7 @@ Options:
         Console.WriteLine($"{cheep.Author} @ {FromUnixTimeToDateTime(cheep.Timestamp)} : {cheep.Message}");
     }
 
-    static string FromUnixTimeToDateTime(long timestamp)
+    public static string FromUnixTimeToDateTime(long timestamp)
     {
         var dto = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
         return dto.ToString(timeFormat);
