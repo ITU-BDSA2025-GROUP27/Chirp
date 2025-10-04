@@ -21,8 +21,17 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
     public void Store(T record)
     {
+        bool hasHeader = File.Exists(_filePath) && new FileInfo(_filePath).Length > 0;
+
         using StreamWriter sw = File.AppendText(_filePath);
         using CsvWriter cw = new(sw, CultureInfo.InvariantCulture);
+
+        // Write CSV header if file is newly created or empty
+        if (!hasHeader)
+        {
+            cw.WriteHeader<T>();
+            cw.NextRecord();
+        }
 
         cw.WriteRecord(record);
         cw.NextRecord();
