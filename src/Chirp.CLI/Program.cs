@@ -46,7 +46,7 @@ class Program
         return Environment.UserName;
     }
 
-    static long FromCurrentDateTimetoUnixTime()
+    public static long FromCurrentDateTimetoUnixTime()
     {
         return ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
     }
