@@ -55,14 +55,15 @@ jobs:
 
     - name: Create ZIP archives
       run: |
-        cd publish/win-x64 && zip -r ../../Chirp-win-x64.zip . && cd ../..
-        cd publish/osx-x64 && zip -r ../../Chirp-osx-x64.zip . && cd ../..
-        cd publish/linux-x64 && zip -r ../../Chirp-linux-x64.zip . && cd ../..
+        VERSION=${{ github.ref_name }}
+        cd publish/win-x64 && zip -r "../../Chirp-${VERSION}-win-x64.zip" . && cd ../..
+        cd publish/osx-x64 && zip -r "../../Chirp-${VERSION}-osx-x64.zip" . && cd ../..
+        cd publish/linux-x64 && zip -r "../../Chirp-${VERSION}-linux-x64.zip" . && cd ../..
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          Chirp-win-x64.zip
-          Chirp-osx-x64.zip
-          Chirp-linux-x64.zip
+          Chirp-${{ github.ref_name }}-win-x64.zip
+          Chirp-${{ github.ref_name }}-osx-x64.zip
+          Chirp-${{ github.ref_name }}-linux-x64.zip
