@@ -3,7 +3,7 @@ using DocoptNet;
 
 namespace Chirp.CLI;
 
-class Program
+public class Program
 {
     public static string file = "data/chirp_cli_db.csv";
     public static CSVDatabase<Cheep> db = new CSVDatabase<Cheep>(file);
