@@ -6,7 +6,7 @@ namespace Chirp.CLI;
 
 public class Program
 {
-    private const string baseURL = "http://localhost:5272";
+    private const string baseURL = "https://bdsagroup27chirpremotedb.azurewebsites.net";
 
     static async Task Main(string[] args)
     {
