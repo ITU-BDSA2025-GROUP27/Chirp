@@ -1,81 +1,35 @@
-using System.Globalization;
-using CsvHelper;
-
 namespace Chirp.CLI.Tests;
 
-public class EndToEndTests : IDisposable
+// Note: Full end-to-end tests with HTTP are in Chirp.CSVDBService.Tests
+// These tests verify CLI UI functionality
+public class EndToEndTests
 {
-    private readonly string _testFilePath;
-
-    public EndToEndTests()
-    {
-        _testFilePath = Path.GetTempFileName();
-    }
-
-    public void Dispose()
-    {
-        if (File.Exists(_testFilePath))
-        {
-            File.Delete(_testFilePath);
-        }
-    }
-
     [Fact]
-    public void Read_ProducesExpectedOutput()
+    public void PrintCheep_FormatsOutputCorrectly()
     {
         // Arrange
-        var cheeps = new List<Cheep>
-        {
-            new Cheep("ropf", "Hello, BDSA students!", 1690891760),
-            new Cheep("adho", "Welcome to the course!", 1690978778),
-            new Cheep("adho", "I hope you had a good summer.", 1690979858),
-            new Cheep("ropf", "Cheeping cheeps on Chirp :)", 1690981487)
-        };
-
-        using (var writer = new StreamWriter(File.Open(_testFilePath, FileMode.Create)))
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-        {
-            csv.WriteRecords(cheeps);
-        }
-
-        var db = SimpleDB.CSVDatabase<Cheep>.Instance(_testFilePath);
+        var cheep = new Cheep("ropf", "Hello, BDSA students!", 1690891760);
 
         // Act
         using var sw = new StringWriter();
         Console.SetOut(sw);
-
-        foreach (var cheep in db.Read(10))
-        {
-            UserInterface.PrintCheep(cheep);
-        }
-
+        UserInterface.PrintCheep(cheep);
         var output = sw.ToString();
 
         // Assert
         Assert.Contains("ropf", output);
         Assert.Contains("Hello, BDSA students!", output);
-        Assert.Contains("adho", output);
-        Assert.Contains("Welcome to the course!", output);
-        Assert.Contains("I hope you had a good summer.", output);
-        Assert.Contains("Cheeping cheeps on Chirp :)", output);
+        Assert.Contains("08/01/23", output); // Date formatted
     }
 
     [Fact]
-    public void Cheep_StoresMessageInDatabase()
+    public void FromCurrentDateTimetoUnixTime_ReturnsValidTimestamp()
     {
-        // Arrange
-        var db = SimpleDB.CSVDatabase<Cheep>.Instance(_testFilePath);
-        string testMessage = "Hello!!!";
-        string author = Environment.UserName;
-
         // Act
-        db.Store(new Cheep(author, testMessage, Program.FromCurrentDateTimetoUnixTime()));
+        var timestamp = Program.FromCurrentDateTimetoUnixTime();
 
-        var results = db.Read().ToList();
-
-        // Assert
-        Assert.Single(results);
-        Assert.Equal(author, results[0].Author);
-        Assert.Equal(testMessage, results[0].Message);
+        // Assert - timestamp should be roughly current time (within last minute)
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+        Assert.InRange(timestamp, now - 60, now + 1);
     }
 }
