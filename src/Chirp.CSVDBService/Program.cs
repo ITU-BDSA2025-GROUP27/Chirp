@@ -3,7 +3,7 @@ using SimpleDB;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-string dbPath = "../../data/chirp_cli_db.csv";
+string dbPath = "data/chirp_cli_db.csv";
 var db = CSVDatabase<Cheep>.Instance(dbPath);
 
 app.MapGet("/", () => "Hello World!");
@@ -23,3 +23,5 @@ app.MapPost("/cheep", (Cheep cheep) =>
 app.Run();
 
 public record Cheep(string Author, string Message, long Timestamp);
+
+public partial class Program { }
