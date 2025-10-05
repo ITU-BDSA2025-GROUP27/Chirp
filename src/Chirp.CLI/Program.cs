@@ -1,14 +1,14 @@
-﻿using SimpleDB;
-using DocoptNet;
+﻿using DocoptNet;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Chirp.CLI;
 
 public class Program
 {
-    public static string file = "../../data/chirp_cli_db.csv";
-    public static CSVDatabase<Cheep> db = CSVDatabase<Cheep>.Instance(file);
+    private const string baseURL = "http://localhost:5272";
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         var arguments = new Docopt().Apply(UserInterface.usage, args, version: "1.0", exit: true)!;
 
@@ -19,31 +19,47 @@ public class Program
             {
                 limit = int.Parse(arguments["<limit>"].ToString());
             }
-            ReadCheeps(limit);
+            await ReadCheeps(limit);
         }
         else if (arguments["cheep"].IsTrue)
         {
             string message = arguments["<message>"].ToString();
-            WriteCheep(message);
+            await WriteCheep(message);
         }
     }
 
-    static void ReadCheeps(int? limit = null)
+    static async Task ReadCheeps(int? limit = null)
     {
-        foreach (var r in db.Read(limit))
+        using HttpClient client = new();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        client.BaseAddress = new Uri(baseURL);
+
+        var cheeps = await client.GetFromJsonAsync<List<Cheep>>("cheeps");
+
+        if (cheeps != null)
         {
-            UserInterface.PrintCheep(r);
+            var cheepsToPrint = limit.HasValue ? cheeps.Take(limit.Value) : cheeps;
+            foreach (var cheep in cheepsToPrint)
+            {
+                UserInterface.PrintCheep(cheep);
+            }
         }
     }
 
-    static void WriteCheep(string message)
+    static async Task WriteCheep(string message)
     {
+        using HttpClient client = new();
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        client.BaseAddress = new Uri(baseURL);
+
         string author = GetUserName();
         long timestamp = FromCurrentDateTimetoUnixTime();
 
         Cheep cheep = new(author, message, timestamp);
 
-        db.Store(cheep);
+        await client.PostAsJsonAsync("cheep", cheep);
     }
 
     static string GetUserName()
