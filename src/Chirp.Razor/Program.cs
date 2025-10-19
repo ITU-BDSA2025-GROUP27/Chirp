@@ -1,9 +1,16 @@
+using Chirp.Razor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<ICheepService, CheepService>();
 
+// Get database path from environment variable or use default temp directory
+var dbPath = Environment.GetEnvironmentVariable("CHIRPDBPATH")
+    ?? Path.Combine(Path.GetTempPath(), "chirp.db");
+
+builder.Services.AddSingleton<DBFacade>(provider => new DBFacade(dbPath));
+builder.Services.AddSingleton<ICheepService, CheepService>();
 
 var app = builder.Build();
 
