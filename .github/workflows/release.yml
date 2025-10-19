@@ -28,7 +28,7 @@ jobs:
 
     - name: Publish for Windows
       run: |
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj \
+        dotnet publish src/Chirp.Razor/Chirp.Razor.csproj \
           --configuration Release \
           --runtime win-x64 \
           --self-contained false \
@@ -37,7 +37,7 @@ jobs:
 
     - name: Publish for macOS
       run: |
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj \
+        dotnet publish src/Chirp.Razor/Chirp.Razor.csproj \
           --configuration Release \
           --runtime osx-x64 \
           --self-contained false \
@@ -46,7 +46,7 @@ jobs:
 
     - name: Publish for Linux
       run: |
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj \
+        dotnet publish src/Chirp.Razor/Chirp.Razor.csproj \
           --configuration Release \
           --runtime linux-x64 \
           --self-contained false \
