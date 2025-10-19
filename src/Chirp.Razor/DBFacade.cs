@@ -45,20 +45,23 @@ public class DBFacade
         }
     }
 
-    public List<(string Author, string Message, long Timestamp)> GetAllCheeps()
+    public List<(string Author, string Message, long Timestamp)> GetAllCheeps(int limit, int offset)
     {
         var cheeps = new List<(string, string, long)>();
 
         var sqlQuery = @"SELECT user.username, message.text, message.pub_date
                         FROM message
                         JOIN user ON message.author_id = user.user_id
-                        ORDER BY message.pub_date DESC";
+                        ORDER BY message.pub_date DESC
+                        LIMIT @limit OFFSET @offset";
 
         using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
         {
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = sqlQuery;
+            command.Parameters.AddWithValue("@limit", limit);
+            command.Parameters.AddWithValue("@offset", offset);
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -73,7 +76,7 @@ public class DBFacade
         return cheeps;
     }
 
-    public List<(string Author, string Message, long Timestamp)> GetCheepsByAuthor(string author)
+    public List<(string Author, string Message, long Timestamp)> GetCheepsByAuthor(string author, int limit, int offset)
     {
         var cheeps = new List<(string, string, long)>();
 
@@ -81,7 +84,8 @@ public class DBFacade
                         FROM message
                         JOIN user ON message.author_id = user.user_id
                         WHERE user.username = @author
-                        ORDER BY message.pub_date DESC";
+                        ORDER BY message.pub_date DESC
+                        LIMIT @limit OFFSET @offset";
 
         using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
         {
@@ -89,6 +93,8 @@ public class DBFacade
             var command = connection.CreateCommand();
             command.CommandText = sqlQuery;
             command.Parameters.AddWithValue("@author", author);
+            command.Parameters.AddWithValue("@limit", limit);
+            command.Parameters.AddWithValue("@offset", offset);
 
             using var reader = command.ExecuteReader();
             while (reader.Read())

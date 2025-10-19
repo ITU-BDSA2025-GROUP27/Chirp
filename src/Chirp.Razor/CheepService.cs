@@ -4,8 +4,8 @@ public record CheepViewModel(string Author, string Message, string Timestamp);
 
 public interface ICheepService
 {
-    public List<CheepViewModel> GetCheeps();
-    public List<CheepViewModel> GetCheepsFromAuthor(string author);
+    public List<CheepViewModel> GetCheeps(int page = 1);
+    public List<CheepViewModel> GetCheepsFromAuthor(string author, int page = 1);
 }
 
 public class CheepService : ICheepService
@@ -17,9 +17,12 @@ public class CheepService : ICheepService
         _dbFacade = dbFacade;
     }
 
-    public List<CheepViewModel> GetCheeps()
+    public List<CheepViewModel> GetCheeps(int page = 1)
     {
-        var cheepsFromDb = _dbFacade.GetAllCheeps();
+        const int limit = 32;
+        var offset = (page - 1) * limit;
+
+        var cheepsFromDb = _dbFacade.GetAllCheeps(limit, offset);
         return cheepsFromDb
             .Select(c => new CheepViewModel(
                 c.Author,
@@ -28,9 +31,12 @@ public class CheepService : ICheepService
             .ToList();
     }
 
-    public List<CheepViewModel> GetCheepsFromAuthor(string author)
+    public List<CheepViewModel> GetCheepsFromAuthor(string author, int page = 1)
     {
-        var cheepsFromDb = _dbFacade.GetCheepsByAuthor(author);
+        const int limit = 32;
+        var offset = (page - 1) * limit;
+
+        var cheepsFromDb = _dbFacade.GetCheepsByAuthor(author, limit, offset);
         return cheepsFromDb
             .Select(c => new CheepViewModel(
                 c.Author,
