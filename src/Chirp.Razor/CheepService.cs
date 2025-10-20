@@ -10,46 +10,32 @@ public interface ICheepService
 
 public class CheepService : ICheepService
 {
-    private readonly DBFacade _dbFacade;
+    private readonly ICheepRepository _cheepRepository;
 
-    public CheepService(DBFacade dbFacade)
+    public CheepService(ICheepRepository cheepRepository)
     {
-        _dbFacade = dbFacade;
+        _cheepRepository = cheepRepository;
     }
 
     public List<CheepViewModel> GetCheeps(int page = 1)
     {
-        const int limit = 32;
-        var offset = (page - 1) * limit;
-
-        var cheepsFromDb = _dbFacade.GetAllCheeps(limit, offset);
+        var cheepsFromDb = _cheepRepository.GetCheeps(page).Result;
         return cheepsFromDb
             .Select(c => new CheepViewModel(
-                c.Author,
-                c.Message,
-                UnixTimeStampToDateTimeString(c.Timestamp)))
+                c.Author.Name,
+                c.Text,
+                c.TimeStamp.ToString("MM/dd/yy H:mm:ss")))
             .ToList();
     }
 
     public List<CheepViewModel> GetCheepsFromAuthor(string author, int page = 1)
     {
-        const int limit = 32;
-        var offset = (page - 1) * limit;
-
-        var cheepsFromDb = _dbFacade.GetCheepsByAuthor(author, limit, offset);
+        var cheepsFromDb = _cheepRepository.GetCheepsByAuthor(author, page).Result;
         return cheepsFromDb
             .Select(c => new CheepViewModel(
-                c.Author,
-                c.Message,
-                UnixTimeStampToDateTimeString(c.Timestamp)))
+                c.Author.Name,
+                c.Text,
+                c.TimeStamp.ToString("MM/dd/yy H:mm:ss")))
             .ToList();
-    }
-
-    private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
-    {
-        // Unix timestamp is seconds past epoch
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp);
-        return dateTime.ToString("MM/dd/yy H:mm:ss");
     }
 }
