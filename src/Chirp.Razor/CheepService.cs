@@ -22,9 +22,9 @@ public class CheepService : ICheepService
         var cheepsFromDb = _cheepRepository.GetCheeps(page).Result;
         return cheepsFromDb
             .Select(c => new CheepViewModel(
-                c.Author.Name,
+                c.Author,
                 c.Text,
-                c.TimeStamp.ToString("MM/dd/yy H:mm:ss")))
+                c.TimeStamp))
             .ToList();
     }
 
@@ -33,9 +33,9 @@ public class CheepService : ICheepService
         var cheepsFromDb = _cheepRepository.GetCheepsByAuthor(author, page).Result;
         return cheepsFromDb
             .Select(c => new CheepViewModel(
-                c.Author.Name,
+                c.Author,
                 c.Text,
-                c.TimeStamp.ToString("MM/dd/yy H:mm:ss")))
+                c.TimeStamp))
             .ToList();
     }
 }
