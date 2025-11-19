@@ -225,7 +225,7 @@ public class CheepRepositoryTests
 
         // Assert
         var cheeps = await context.Cheeps.Include(c => c.Author).ToListAsync();
-        Assert.Equal(1, cheeps.Count);
+        Assert.Single(cheeps);
         Assert.Equal("This is a new cheep", cheeps[0].Text);
         Assert.Equal("ExistingAuthor", cheeps[0].Author.Name);
     }
