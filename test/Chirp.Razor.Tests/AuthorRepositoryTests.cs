@@ -1,3 +1,5 @@
+using Chirp.Core;
+using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
