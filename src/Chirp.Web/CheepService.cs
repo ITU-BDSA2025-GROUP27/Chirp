@@ -1,4 +1,6 @@
-namespace Chirp.Razor;
+using Chirp.Core;
+using Chirp.Infrastructure;
+namespace Chirp.Web;
 
 public record CheepViewModel(string Author, string Message, string Timestamp);
 

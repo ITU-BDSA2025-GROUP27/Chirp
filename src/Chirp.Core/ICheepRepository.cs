@@ -1,7 +1,11 @@
-namespace Chirp.Razor;
+namespace Chirp.Core;
 
 public interface ICheepRepository
 {
+    // Queries
     Task<List<CheepDTO>> GetCheeps(int page);
     Task<List<CheepDTO>> GetCheepsByAuthor(string author, int page);
+
+    // Commands
+    Task CreateCheep(string authorName, string authorEmail, string text);
 }
