@@ -5,10 +5,12 @@ namespace Chirp.Razor;
 public class CheepRepository : ICheepRepository
 {
     private readonly ChirpDBContext _dbContext;
+    private readonly IAuthorRepository _authorRepository;
 
-    public CheepRepository(ChirpDBContext dbContext)
+    public CheepRepository(ChirpDBContext dbContext, IAuthorRepository authorRepository)
     {
         _dbContext = dbContext;
+        _authorRepository = authorRepository;
     }
 
     public async Task<List<CheepDTO>> GetCheeps(int page)
@@ -40,5 +42,32 @@ public class CheepRepository : ICheepRepository
 
         var result = await query.ToListAsync();
         return result;
+    }
+
+    public async Task CreateCheep(string authorName, string authorEmail, string text)
+    {
+        // Find or create author
+        var author = await _authorRepository.FindAuthorByName(authorName);
+        if (author == null)
+        {
+            author = new Author
+            {
+                Name = authorName,
+                Email = authorEmail,
+                Cheeps = new List<Cheep>()
+            };
+            await _authorRepository.CreateAuthor(author);
+        }
+
+        // Create cheep
+        var cheep = new Cheep
+        {
+            Text = text,
+            TimeStamp = DateTime.Now,
+            Author = author
+        };
+
+        _dbContext.Cheeps.Add(cheep);
+        await _dbContext.SaveChangesAsync();
     }
 }
