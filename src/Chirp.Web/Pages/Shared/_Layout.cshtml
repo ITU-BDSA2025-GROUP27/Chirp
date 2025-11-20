@@ -15,15 +15,17 @@
             <div>
                 <a href="/@(User.Identity.Name)">my timeline</a> |
                 <a href="/">public timeline</a> |
-                <a href="#">logout [@(User.Identity.Name)]</a>
+                <form style="display: inline;" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                    <button type="submit">logout [@(User.Identity.Name)]</button>
+                </form>
             </div>
         }
         else
         {
             <div>
                 <a href="/">public timeline</a> |
-                <a href="#">register</a> |
-                <a href="#">login</a>
+                <a asp-area="Identity" asp-page="/Account/Register">register</a> |
+                <a asp-area="Identity" asp-page="/Account/Login">login</a>
             </div>
         }
     </div>
