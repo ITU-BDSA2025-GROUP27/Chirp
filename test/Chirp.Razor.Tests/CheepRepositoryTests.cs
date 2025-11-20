@@ -20,7 +20,7 @@ public class CheepRepositoryTests
 
         var author = new Author
         {
-            Name = "TestAuthor",
+            UserName ="TestAuthor",
             Email = "test@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -61,14 +61,14 @@ public class CheepRepositoryTests
 
         var author1 = new Author
         {
-            Name = "Author1",
+            UserName ="Author1",
             Email = "author1@example.com",
             Cheeps = new List<Cheep>()
         };
 
         var author2 = new Author
         {
-            Name = "Author2",
+            UserName ="Author2",
             Email = "author2@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -116,7 +116,7 @@ public class CheepRepositoryTests
 
         var author = new Author
         {
-            Name = "TestAuthor",
+            UserName ="TestAuthor",
             Email = "test@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -164,7 +164,7 @@ public class CheepRepositoryTests
 
         var author = new Author
         {
-            Name = "TestAuthor",
+            UserName ="TestAuthor",
             Email = "test@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -209,7 +209,7 @@ public class CheepRepositoryTests
 
         var author = new Author
         {
-            Name = "ExistingAuthor",
+            UserName ="ExistingAuthor",
             Email = "existing@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -227,7 +227,7 @@ public class CheepRepositoryTests
         var cheeps = await context.Cheeps.Include(c => c.Author).ToListAsync();
         Assert.Single(cheeps);
         Assert.Equal("This is a new cheep", cheeps[0].Text);
-        Assert.Equal("ExistingAuthor", cheeps[0].Author.Name);
+        Assert.Equal("ExistingAuthor", cheeps[0].Author.UserName);
     }
 
     [Fact]
@@ -250,12 +250,12 @@ public class CheepRepositoryTests
         // Assert
         var authors = await context.Authors.ToListAsync();
         Assert.Single(authors);
-        Assert.Equal("NewAuthor", authors[0].Name);
+        Assert.Equal("NewAuthor", authors[0].UserName);
         Assert.Equal("new@example.com", authors[0].Email);
 
         var cheeps = await context.Cheeps.Include(c => c.Author).ToListAsync();
         Assert.Single(cheeps);
         Assert.Equal("First cheep by new author", cheeps[0].Text);
-        Assert.Equal("NewAuthor", cheeps[0].Author.Name);
+        Assert.Equal("NewAuthor", cheeps[0].Author.UserName);
     }
 }

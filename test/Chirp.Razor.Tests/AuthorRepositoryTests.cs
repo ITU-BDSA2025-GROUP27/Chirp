@@ -20,7 +20,7 @@ public class AuthorRepositoryTests
 
         var author = new Author
         {
-            Name = "TestAuthor",
+            UserName = "TestAuthor",
             Email = "test@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -35,7 +35,7 @@ public class AuthorRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("TestAuthor", result.Name);
+        Assert.Equal("TestAuthor", result.UserName);
         Assert.Equal("test@example.com", result.Email);
     }
 
@@ -72,7 +72,7 @@ public class AuthorRepositoryTests
 
         var author = new Author
         {
-            Name = "TestAuthor",
+            UserName = "TestAuthor",
             Email = "test@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -87,7 +87,7 @@ public class AuthorRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("TestAuthor", result.Name);
+        Assert.Equal("TestAuthor", result.UserName);
         Assert.Equal("test@example.com", result.Email);
     }
 
@@ -126,7 +126,7 @@ public class AuthorRepositoryTests
 
         var newAuthor = new Author
         {
-            Name = "NewAuthor",
+            UserName ="NewAuthor",
             Email = "new@example.com",
             Cheeps = new List<Cheep>()
         };
@@ -135,9 +135,9 @@ public class AuthorRepositoryTests
         await repository.CreateAuthor(newAuthor);
 
         // Assert
-        var result = await context.Authors.FirstOrDefaultAsync(a => a.Name == "NewAuthor");
+        var result = await context.Authors.FirstOrDefaultAsync(a => a.UserName == "NewAuthor");
         Assert.NotNull(result);
-        Assert.Equal("NewAuthor", result.Name);
+        Assert.Equal("NewAuthor", result.UserName);
         Assert.Equal("new@example.com", result.Email);
     }
 }
