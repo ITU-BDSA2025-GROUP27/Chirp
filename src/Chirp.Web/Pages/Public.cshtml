@@ -8,6 +8,11 @@
 <div>
     <h2> Public Timeline </h2>
 
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <partial name="_CheepCreationPartial" for="Input" />
+    }
+
     @if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
