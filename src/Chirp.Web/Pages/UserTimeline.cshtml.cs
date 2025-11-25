@@ -1,6 +1,5 @@
 using Chirp.Core;
-using Chirp.Infrastructure;
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Web.Pages;
@@ -8,7 +7,7 @@ namespace Chirp.Web.Pages;
 public class UserTimelineModel : PageModel
 {
     private readonly ICheepService _service;
-    public required List<CheepViewModel> Cheeps { get; set; }
+    public required List<CheepDTO> Cheeps { get; set; }
 
     public UserTimelineModel(ICheepService service)
     {
