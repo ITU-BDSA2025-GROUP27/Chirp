@@ -31,7 +31,23 @@ public class PlaywrightTestBase
         _serverProcess = Process.Start(startInfo)
             ?? throw new InvalidOperationException("Failed to start Chirp.Web process.");
 
-        await Task.Delay(5000);
+        var serverReady = false;
+        var timeout = DateTime.UtcNow.AddSeconds(30);
+
+        while (!serverReady && DateTime.UtcNow < timeout)
+        {
+            var line = _serverProcess.StandardOutput.ReadLine();
+            if (line?.Contains("Now listening on:", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                serverReady = true;
+            }
+        }
+
+        if (!serverReady)
+        {
+            _serverProcess.Kill(true);
+            throw new TimeoutException("Server did not start within 30 seconds");
+        }
     }
 
     [OneTimeTearDown]
