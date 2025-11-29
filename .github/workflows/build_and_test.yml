@@ -21,7 +21,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Install Playwright browsers
-      run: pwsh test/Chirp.Playwright.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+      run: pwsh test/Chirp.Playwright.Tests/bin/Debug/net8.0/playwright.ps1 install
     - name: Test
       run: |
         export authentication__github__clientId="${{ secrets.GITHUBCLIENTID }}"
