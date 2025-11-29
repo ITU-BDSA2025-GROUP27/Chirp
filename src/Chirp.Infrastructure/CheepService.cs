@@ -20,4 +20,9 @@ public class CheepService : ICheepService
     {
         return _cheepRepository.GetCheepsByAuthor(author, page).Result;
     }
+
+    public async Task CreateCheep(string authorName, string authorEmail, string text)
+    {
+        await _cheepRepository.CreateCheep(authorName, authorEmail, text);
+    }
 }

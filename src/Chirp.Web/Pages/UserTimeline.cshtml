@@ -9,6 +9,11 @@
 <div>
     <h2> @routeName's Timeline </h2>
 
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <partial name="_CheepCreationPartial" for="Input" />
+    }
+
     @if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
