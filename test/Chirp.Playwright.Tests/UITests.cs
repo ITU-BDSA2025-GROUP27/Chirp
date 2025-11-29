@@ -1,53 +1,53 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using Chirp.Infrastructure;
+using Chirp.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Playwright.Tests;
 
-[Parallelizable(ParallelScope.Self)]
+[NonParallelizable]
 [TestFixture]
 public class UITests : PageTest
 {
-    private Process? _serverProcess;
-    private const string BaseUrl = "http://localhost:5273";
+    private readonly List<string> _testUserEmails = new();
 
-    [SetUp]
-    public async Task Init()
+    private ChirpDBContext CreateDbContext()
     {
-        // Start the Chirp.Web server
-        _serverProcess = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = "run --project ../../src/Chirp.Web/Chirp.Web.csproj --no-build",
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            }
-        };
-        _serverProcess.Start();
-
-        // Wait for server to be ready
-        await Task.Delay(3000);
+        var solutionDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
+        var dbPath = Path.Combine(solutionDir, "src/Chirp.Web/chirp.db");
+        var optionsBuilder = new DbContextOptionsBuilder<ChirpDBContext>();
+        optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        return new ChirpDBContext(optionsBuilder.Options);
     }
 
     [TearDown]
-    public async Task Cleanup()
+    public async Task CleanupTestData()
     {
-        if (_serverProcess != null && !_serverProcess.HasExited)
+        if (_testUserEmails.Count == 0) return;
+
+        using var context = CreateDbContext();
+
+        var testAuthors = await context.Authors
+            .Where(a => a.Email != null && _testUserEmails.Contains(a.Email))
+            .Include(a => a.Cheeps)
+            .ToListAsync();
+
+        foreach (var author in testAuthors)
         {
-            _serverProcess.Kill();
-            _serverProcess.Dispose();
+            context.Cheeps.RemoveRange(author.Cheeps);
         }
+
+        context.Authors.RemoveRange(testAuthors);
+        await context.SaveChangesAsync();
+        _testUserEmails.Clear();
     }
 
     [Test]
     public async Task UnauthenticatedUserDoesNotSeeCheepBoxOnPublicTimeline()
     {
-        await Page.GotoAsync(BaseUrl);
+        await Page.GotoAsync(PlaywrightTestBase.BaseUrl);
 
         // Expect to see the Public Timeline heading
         await Expect(Page.Locator("h2")).ToContainTextAsync("Public Timeline");
@@ -60,7 +60,7 @@ public class UITests : PageTest
     [Test]
     public async Task UnauthenticatedUserDoesNotSeeCheepBoxOnUserTimeline()
     {
-        await Page.GotoAsync($"{BaseUrl}/Helge");
+        await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Helge");
 
         // Expect to see the user's timeline heading
         await Expect(Page.Locator("h2")).ToContainTextAsync("Helge's Timeline");
@@ -71,9 +71,33 @@ public class UITests : PageTest
     }
 
     [Test]
+    public async Task AuthenticatedUserSeesCheepBoxAfterLogin()
+    {
+        var testEmail = $"uitest{Guid.NewGuid():N}@example.com";
+        var testPassword = "TestPassword123!";
+        _testUserEmails.Add(testEmail);
+
+        // Register a new user
+        await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
+        await Page.FillAsync("input[id='Input_Email']", testEmail);
+        await Page.FillAsync("input[id='Input_Password']", testPassword);
+        await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);
+        await Page.ClickAsync("button[id='registerSubmit']");
+
+        // Verify cheep box IS visible for authenticated users
+        var cheepbox = Page.Locator(".cheepbox");
+        await Expect(cheepbox).ToBeVisibleAsync();
+
+        // Verify the input field for text is present
+        await Expect(Page.Locator("#Input_Text")).ToBeVisibleAsync();
+        // Verify the submit button is present
+        await Expect(Page.Locator(".cheepbox input[type='submit']")).ToBeVisibleAsync();
+    }
+
+    [Test]
     public async Task PublicTimelineDisplaysCheeps()
     {
-        await Page.GotoAsync(BaseUrl);
+        await Page.GotoAsync(PlaywrightTestBase.BaseUrl);
 
         // Expect to see cheeps in the message list
         var messagelist = Page.Locator("#messagelist");
@@ -87,7 +111,7 @@ public class UITests : PageTest
     [Test]
     public async Task CanNavigateToUserTimelineFromPublicTimeline()
     {
-        await Page.GotoAsync(BaseUrl);
+        await Page.GotoAsync(PlaywrightTestBase.BaseUrl);
 
         // Click on the first author link in the message list
         var firstAuthorLink = Page.Locator("#messagelist strong a").First;
