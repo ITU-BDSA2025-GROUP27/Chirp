@@ -24,7 +24,10 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: |
+        export authentication__github__clientId="${{ secrets.GITHUBCLIENTID }}"
+        export authentication__github__clientSecret="${{ secrets.GITHUBCLIENTSECRET }}"
+        dotnet test --no-build --configuration Release --verbosity normal
 
     - name: Publish for Windows
       run: |
