@@ -35,7 +35,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
-        ICheepService cheepService = new CheepService(cheepRepository);
+        ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
         await cheepService.CreateCheep("TestUser", "test@example.com", "Hello, World!");
@@ -60,7 +60,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
-        ICheepService cheepService = new CheepService(cheepRepository);
+        ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
         await cheepService.CreateCheep("Author1", "author1@example.com", "First cheep");
@@ -84,7 +84,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
-        ICheepService cheepService = new CheepService(cheepRepository);
+        ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
         await cheepService.CreateCheep("TestAuthor", "test@example.com", "My cheep");
