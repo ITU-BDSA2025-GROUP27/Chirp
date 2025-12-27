@@ -27,6 +27,25 @@
                         @cheep.Text
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>
+                    @if (User.Identity!.IsAuthenticated && User.Identity.Name != cheep.Author)
+                    {
+                        @if (Model.Following.Contains(cheep.Author))
+                        {
+                            <form method="post">
+                                <button type="submit" asp-page-handler="Unfollow" asp-route-author="@routeName" asp-route-authorName="@cheep.Author">
+                                    unfollow
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post">
+                                <button type="submit" asp-page-handler="Follow" asp-route-author="@routeName" asp-route-authorName="@cheep.Author">
+                                    follow
+                                </button>
+                            </form>
+                        }
+                    }
                 </li>
             }
         </ul>

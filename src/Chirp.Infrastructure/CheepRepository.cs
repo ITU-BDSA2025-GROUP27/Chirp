@@ -45,6 +45,22 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
+    public async Task<List<CheepDTO>> GetCheepsByAuthors(List<string> authors, int page)
+    {
+        var query = (from cheep in _dbContext.Cheeps
+                    where authors.Contains(cheep.Author.UserName!)
+                    orderby cheep.TimeStamp descending
+                    select new CheepDTO(
+                        cheep.Author.UserName!,
+                        cheep.Text,
+                        cheep.TimeStamp.ToString("MM/dd/yy H:mm:ss")))
+                    .Skip((page - 1) * 32)
+                    .Take(32);
+
+        var result = await query.ToListAsync();
+        return result;
+    }
+
     public async Task CreateCheep(string authorName, string authorEmail, string text)
     {
         // Find or create author

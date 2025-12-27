@@ -8,6 +8,7 @@ public class PublicModel : PageModel
 {
     private readonly ICheepService _service;
     public required List<CheepDTO> Cheeps { get; set; }
+    public HashSet<string> Following { get; set; } = new();
 
     [BindProperty]
     public CheepInputModel Input { get; set; } = new();
@@ -17,9 +18,10 @@ public class PublicModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet([FromQuery] int page = 1)
+    public async Task<ActionResult> OnGet([FromQuery] int page = 1)
     {
         Cheeps = _service.GetCheeps(page);
+        await LoadFollowingAsync();
         return Page();
     }
 
@@ -28,6 +30,7 @@ public class PublicModel : PageModel
         if (!ModelState.IsValid)
         {
             Cheeps = _service.GetCheeps(1);
+            await LoadFollowingAsync();
             return Page();
         }
 
@@ -40,5 +43,38 @@ public class PublicModel : PageModel
         }
 
         return RedirectToPage("Public");
+    }
+
+    public async Task<IActionResult> OnPostFollow(string authorName)
+    {
+        var userName = User.Identity?.Name;
+        if (userName != null && authorName != null)
+        {
+            await _service.FollowAuthor(userName, authorName);
+        }
+        return RedirectToPage("Public");
+    }
+
+    public async Task<IActionResult> OnPostUnfollow(string authorName)
+    {
+        var userName = User.Identity?.Name;
+        if (userName != null && authorName != null)
+        {
+            await _service.UnfollowAuthor(userName, authorName);
+        }
+        return RedirectToPage("Public");
+    }
+
+    private async Task LoadFollowingAsync()
+    {
+        if (User.Identity?.IsAuthenticated == true && User.Identity.Name != null)
+        {
+            var followedUsers = await _service.GetFollowing(User.Identity.Name);
+
+            foreach (var user in followedUsers)
+            {
+                Following.Add(user);
+            }
+        }
     }
 }
