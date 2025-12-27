@@ -50,6 +50,7 @@ public class EndToEndTests : PageTest
     [Test]
     public async Task UserCanRegisterAndSeeCheepBox()
     {
+        var testUserName = $"TestUser{Guid.NewGuid():N}";
         var testEmail = $"test{Guid.NewGuid():N}@example.com";
         var testPassword = "TestPassword123!";
         _testUserEmails.Add(testEmail);
@@ -58,6 +59,7 @@ public class EndToEndTests : PageTest
         await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
 
         // Fill in registration form
+        await Page.FillAsync("input[id='Input_UserName']", testUserName);
         await Page.FillAsync("input[id='Input_Email']", testEmail);
         await Page.FillAsync("input[id='Input_Password']", testPassword);
         await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);
@@ -73,6 +75,7 @@ public class EndToEndTests : PageTest
     [Test]
     public async Task UserCanSendCheepAndItAppearsOnTimeline()
     {
+        var testUserName = $"TestUser{Guid.NewGuid():N}";
         var testEmail = $"test{Guid.NewGuid():N}@example.com";
         var testPassword = "TestPassword123!";
         var cheepText = $"Test cheep {Guid.NewGuid():N}";
@@ -80,6 +83,7 @@ public class EndToEndTests : PageTest
 
         // Register a new user
         await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
+        await Page.FillAsync("input[id='Input_UserName']", testUserName);
         await Page.FillAsync("input[id='Input_Email']", testEmail);
         await Page.FillAsync("input[id='Input_Password']", testPassword);
         await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);
@@ -100,6 +104,7 @@ public class EndToEndTests : PageTest
     [Test]
     public async Task UserCanSendCheepAndItIsStoredInDatabase()
     {
+        var testUserName = $"TestUser{Guid.NewGuid():N}";
         var testEmail = $"test{Guid.NewGuid():N}@example.com";
         var testPassword = "TestPassword123!";
         var cheepText = $"Database test cheep {Guid.NewGuid():N}";
@@ -107,6 +112,7 @@ public class EndToEndTests : PageTest
 
         // Register a new user
         await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
+        await Page.FillAsync("input[id='Input_UserName']", testUserName);
         await Page.FillAsync("input[id='Input_Email']", testEmail);
         await Page.FillAsync("input[id='Input_Password']", testPassword);
         await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);
@@ -130,6 +136,7 @@ public class EndToEndTests : PageTest
     [Test]
     public async Task CheepWithMoreThan160CharactersIsTruncatedTo160()
     {
+        var testUserName = $"TestUser{Guid.NewGuid():N}";
         var testEmail = $"test{Guid.NewGuid():N}@example.com";
         var testPassword = "TestPassword123!";
         var longCheepText = new string('a', 161);
@@ -137,6 +144,7 @@ public class EndToEndTests : PageTest
 
         // Register a new user
         await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
+        await Page.FillAsync("input[id='Input_UserName']", testUserName);
         await Page.FillAsync("input[id='Input_Email']", testEmail);
         await Page.FillAsync("input[id='Input_Password']", testPassword);
         await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);

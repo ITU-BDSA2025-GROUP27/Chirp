@@ -73,12 +73,14 @@ public class UITests : PageTest
     [Test]
     public async Task AuthenticatedUserSeesCheepBoxAfterLogin()
     {
+        var testUserName = $"TestUser{Guid.NewGuid():N}";
         var testEmail = $"uitest{Guid.NewGuid():N}@example.com";
         var testPassword = "TestPassword123!";
         _testUserEmails.Add(testEmail);
 
         // Register a new user
         await Page.GotoAsync($"{PlaywrightTestBase.BaseUrl}/Identity/Account/Register");
+        await Page.FillAsync("input[id='Input_UserName']", testUserName);
         await Page.FillAsync("input[id='Input_Email']", testEmail);
         await Page.FillAsync("input[id='Input_Password']", testPassword);
         await Page.FillAsync("input[id='Input_ConfirmPassword']", testPassword);
