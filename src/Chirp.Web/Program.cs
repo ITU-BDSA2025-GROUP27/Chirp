@@ -23,6 +23,8 @@ builder.Services.AddAuthentication()
         o.CallbackPath = "/signin-github";
         o.CorrelationCookie.SameSite = SameSiteMode.Lax;
         o.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        o.Scope.Add("user:email");
+        o.Scope.Add("read:user");
     });
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();

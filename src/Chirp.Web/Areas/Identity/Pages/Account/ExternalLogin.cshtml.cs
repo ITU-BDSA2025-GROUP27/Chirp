@@ -125,17 +125,59 @@ namespace Chirp.Web.Areas.Identity.Pages.Account
             }
             else
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                // If the user does not have an account, create one from GitHub claims
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var userName = info.Principal.Identity?.Name;
+
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userName))
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    ErrorMessage = "Unable to retrieve email or username from GitHub. Please ensure your GitHub account has a public email.";
+                    return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
                 }
-                return Page();
+
+                // Check if a user with this email already exists
+                var existingUser = await _userManager.FindByEmailAsync(email);
+                if (existingUser != null)
+                {
+                    var addLoginResult = await _userManager.AddLoginAsync(existingUser, info);
+                    if (addLoginResult.Succeeded)
+                    {
+                        _logger.LogInformation("Linked GitHub account to existing user {Email}.", email);
+                        await _signInManager.SignInAsync(existingUser, isPersistent: false, info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        _logger.LogError("Failed to link GitHub account to existing user {Email}.", email);
+                        ErrorMessage = "Unable to link your GitHub account to your existing account.";
+                        return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                    }
+                }
+
+                // Create the user
+                var user = CreateUser();
+                await _userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    createResult = await _userManager.AddLoginAsync(user, info);
+                    if (createResult.Succeeded)
+                    {
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+
+                // If we got here, something went wrong
+                foreach (var error in createResult.Errors)
+                {
+                    _logger.LogError("Error creating user: {Error}", error.Description);
+                }
+                ErrorMessage = "Error creating your account. Please try again.";
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
         }
 
