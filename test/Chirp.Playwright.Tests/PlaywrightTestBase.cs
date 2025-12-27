@@ -55,7 +55,7 @@ public class PlaywrightTestBase
     {
         if (_serverProcess != null && !_serverProcess.HasExited)
         {
-            _serverProcess.Kill();
+            _serverProcess.Kill(true);
             _serverProcess.Dispose();
         }
     }
