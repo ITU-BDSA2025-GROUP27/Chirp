@@ -264,6 +264,14 @@ button:hover {
     background-color: #8b4949;
 }
 
+button.btn-danger {
+    background-color: red;
+}
+
+button.btn-danger:hover {
+    background-color: darkred;
+}
+
 ul.nav {
     list-style-type: none;
     margin: 0;

@@ -1,0 +1,89 @@
+@page
+@model Chirp.Web.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "About Me";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+    <h2>About Me</h2>
+
+    <div class="followstatus">
+        <h3>User Information</h3>
+        <p><strong>Username:</strong> @Model.UserName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+    </div>
+
+    <div class="followstatus" style="margin-top: 15px;">
+        <h3>Following (@Model.Following.Count users)</h3>
+        @if (Model.Following.Any())
+        {
+            <ul style="list-style: none; padding-left: 0;">
+                @foreach (var followedUser in Model.Following)
+                {
+                    <li style="margin: 5px 0;">
+                        <a href="/@followedUser">@followedUser</a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <em>You are not following anyone yet.</em>
+        }
+    </div>
+
+    <div style="margin-top: 15px;">
+        <h3>Download My Data</h3>
+        <form method="post" asp-page-handler="DownloadData">
+            <button type="submit">Download All My Data</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <h3>Delete My Account</h3>
+        <form method="post" asp-page-handler="ForgetMe" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            <button type="submit" class="btn-danger">Forget me!</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <h3>My Cheeps</h3>
+
+        @if (Model.Cheeps.Any())
+        {
+            <ul id="messagelist" class="cheeps">
+                @foreach (var cheep in Model.Cheeps)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a href="/@cheep.Author">@cheep.Author</a>
+                            </strong>
+                            @cheep.Text
+                            <small>&mdash; @cheep.TimeStamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+
+            <div style="margin-top: 10px;">
+                @if (Model.CurrentPage > 1)
+                {
+                    <a href="/aboutme?page=@(Model.CurrentPage - 1)">Previous</a>
+                    <span> | </span>
+                }
+                <span>Page @Model.CurrentPage</span>
+                @if (Model.Cheeps.Count == 32)
+                {
+                    <span> | </span>
+                    <a href="/aboutme?page=@(Model.CurrentPage + 1)">Next</a>
+                }
+            </div>
+        }
+        else
+        {
+            <em>You haven't posted any cheeps yet.</em>
+        }
+    </div>
+</div>
