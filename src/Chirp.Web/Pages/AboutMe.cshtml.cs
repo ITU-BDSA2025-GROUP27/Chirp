@@ -1,5 +1,6 @@
 using Chirp.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO.Compression;
@@ -12,6 +13,8 @@ public class AboutMeModel : PageModel
 {
     private readonly ICheepService _cheepService;
     private readonly IAuthorRepository _authorRepository;
+    private readonly UserManager<Author> _userManager;
+    private readonly SignInManager<Author> _signInManager;
 
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -19,10 +22,13 @@ public class AboutMeModel : PageModel
     public List<CheepDTO> Cheeps { get; set; } = new();
     public int CurrentPage { get; set; } = 1;
 
-    public AboutMeModel(ICheepService cheepService, IAuthorRepository authorRepository)
+    public AboutMeModel(ICheepService cheepService, IAuthorRepository authorRepository,
+        UserManager<Author> userManager, SignInManager<Author> signInManager)
     {
         _cheepService = cheepService;
         _authorRepository = authorRepository;
+        _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     public async Task<IActionResult> OnGet([FromQuery] int page = 1)
@@ -110,5 +116,34 @@ public class AboutMeModel : PageModel
         } while (pageCheeps.Count == 32);
 
         return allCheeps;
+    }
+
+    public async Task<IActionResult> OnPostForgetMe()
+    {
+        if (User.Identity?.Name == null)
+        {
+            return RedirectToPage("/Public");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return RedirectToPage("/Public");
+        }
+
+        // Delete the user account (this will remove all associated data)
+        var result = await _userManager.DeleteAsync(user);
+
+        if (result.Succeeded)
+        {
+            // Log the user out
+            await _signInManager.SignOutAsync();
+
+            // Redirect to the public timeline
+            return RedirectToPage("/Public");
+        }
+
+        // If deletion failed, stay on the page
+        return Page();
     }
 }

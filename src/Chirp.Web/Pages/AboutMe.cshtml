@@ -34,13 +34,20 @@
     </div>
 
     <div style="margin-top: 15px;">
-        <h3>Download Your Data</h3>
+        <h3>Download My Data</h3>
         <form method="post" asp-page-handler="DownloadData">
-            <button type="submit">Download All My Data (ZIP)</button>
+            <button type="submit">Download All My Data</button>
         </form>
     </div>
 
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 15px;">
+        <h3>Delete My Account</h3>
+        <form method="post" asp-page-handler="ForgetMe" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            <button type="submit" class="btn-danger">Forget me!</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 15px;">
         <h3>My Cheeps</h3>
 
         @if (Model.Cheeps.Any())

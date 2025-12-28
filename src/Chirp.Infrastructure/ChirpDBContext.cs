@@ -22,5 +22,11 @@ public class ChirpDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
             .HasMany(a => a.Following)
             .WithMany(a => a.Followers)
             .UsingEntity(j => j.ToTable("AuthorFollows"));
+
+        modelBuilder.Entity<Author>()
+            .HasMany(a => a.Cheeps)
+            .WithOne(c => c.Author)
+            .HasForeignKey(c => c.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
