@@ -47,7 +47,7 @@ public class FollowIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Bella follows Cheryl (initial state)
@@ -70,7 +70,8 @@ public class FollowIntegrationTests
 
         // Assert - Anna's timeline shows her own cheeps + Bella's + Cheryl's
         var annaFollowing = await cheepService.GetFollowing("Anna");
-        var annaTimelineAuthors = new List<string>(annaFollowing) { "Anna" };
+        var annaTimelineAuthors = annaFollowing.Select(f => f.UserName).ToList();
+        annaTimelineAuthors.Add("Anna");
         var annaTimeline = cheepService.GetCheepsFromAuthors(annaTimelineAuthors, 1);
 
         Assert.Equal(5, annaTimeline.Count); // 1 from Anna + 2 from Bella + 2 from Cheryl
@@ -90,7 +91,8 @@ public class FollowIntegrationTests
 
         // Assert - Bella's timeline shows her own cheeps + Cheryl's cheeps
         var bellaFollowing = await cheepService.GetFollowing("Bella");
-        var bellaTimelineAuthors = new List<string>(bellaFollowing) { "Bella" };
+        var bellaTimelineAuthors = bellaFollowing.Select(f => f.UserName).ToList();
+        bellaTimelineAuthors.Add("Bella");
         var bellaOwnTimeline = cheepService.GetCheepsFromAuthors(bellaTimelineAuthors, 1);
 
         Assert.Equal(4, bellaOwnTimeline.Count); // 2 from Bella + 2 from Cheryl
@@ -137,7 +139,7 @@ public class FollowIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps
@@ -152,7 +154,8 @@ public class FollowIntegrationTests
 
         // Verify initial state - Anna sees all three
         var annaFollowing = await cheepService.GetFollowing("Anna");
-        var annaTimelineAuthors = new List<string>(annaFollowing) { "Anna" };
+        var annaTimelineAuthors = annaFollowing.Select(f => f.UserName).ToList();
+        annaTimelineAuthors.Add("Anna");
         var annaTimelineBefore = cheepService.GetCheepsFromAuthors(annaTimelineAuthors, 1);
         Assert.Equal(3, annaTimelineBefore.Count);
 
@@ -161,7 +164,8 @@ public class FollowIntegrationTests
 
         // Assert - Anna's timeline now shows only her own cheeps and Cheryl's
         var annaFollowingAfter = await cheepService.GetFollowing("Anna");
-        var annaTimelineAuthorsAfter = new List<string>(annaFollowingAfter) { "Anna" };
+        var annaTimelineAuthorsAfter = annaFollowingAfter.Select(f => f.UserName).ToList();
+        annaTimelineAuthorsAfter.Add("Anna");
         var annaTimelineAfter = cheepService.GetCheepsFromAuthors(annaTimelineAuthorsAfter, 1);
 
         Assert.Equal(2, annaTimelineAfter.Count);
@@ -172,12 +176,12 @@ public class FollowIntegrationTests
         // Assert - Anna is now only following Cheryl
         var annaFollowingList = await cheepService.GetFollowing("Anna");
         Assert.Single(annaFollowingList);
-        Assert.Equal("Cheryl", annaFollowingList[0]);
+        Assert.Equal("Cheryl", annaFollowingList[0].UserName);
 
         // Assert - Bella still follows Cheryl (Anna's action didn't affect Bella)
         var bellaFollowing = await cheepService.GetFollowing("Bella");
         Assert.Single(bellaFollowing);
-        Assert.Equal("Cheryl", bellaFollowing[0]);
+        Assert.Equal("Cheryl", bellaFollowing[0].UserName);
     }
 
     [Fact]
@@ -217,7 +221,7 @@ public class FollowIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps
@@ -271,7 +275,7 @@ public class FollowIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act - Anna follows Bella (but not vice versa)

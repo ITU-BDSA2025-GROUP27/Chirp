@@ -35,7 +35,21 @@ public class CheepService : ICheepService
 
     public async Task CreateCheep(string authorName, string authorEmail, string text)
     {
-        await _cheepRepository.CreateCheep(authorName, authorEmail, text);
+        // Service orchestrates: find or create author
+        var authorDTO = await _authorRepository.FindAuthorByName(authorName);
+        if (authorDTO == null)
+        {
+            var newAuthor = new Author
+            {
+                UserName = authorName,
+                Email = authorEmail,
+                Cheeps = new List<Cheep>()
+            };
+            await _authorRepository.CreateAuthor(newAuthor);
+        }
+
+        // Then tell repository to create the cheep
+        await _cheepRepository.CreateCheep(authorName, text);
     }
 
     public async Task<bool> IsFollowing(string followerName, string followedName)
@@ -43,7 +57,7 @@ public class CheepService : ICheepService
         return await _authorRepository.IsFollowing(followerName, followedName);
     }
 
-    public async Task<List<string>> GetFollowing(string authorName)
+    public async Task<List<AuthorDTO>> GetFollowing(string authorName)
     {
         return await _authorRepository.GetFollowing(authorName);
     }

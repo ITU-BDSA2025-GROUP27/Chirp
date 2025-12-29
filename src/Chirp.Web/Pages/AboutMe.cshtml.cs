@@ -18,7 +18,7 @@ public class AboutMeModel : PageModel
 
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public List<string> Following { get; set; } = new();
+    public List<AuthorDTO> Following { get; set; } = new();
     public List<CheepDTO> Cheeps { get; set; } = new();
     public int CurrentPage { get; set; } = 1;
 
@@ -81,7 +81,7 @@ public class AboutMeModel : PageModel
                 await writer.WriteLineAsync("Username");
                 foreach (var followedUser in following)
                 {
-                    await writer.WriteLineAsync(followedUser);
+                    await writer.WriteLineAsync(followedUser.UserName);
                 }
             }
 

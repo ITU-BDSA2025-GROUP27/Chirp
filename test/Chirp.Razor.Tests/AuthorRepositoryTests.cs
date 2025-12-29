@@ -8,7 +8,7 @@ namespace Chirp.Razor.Tests;
 public class AuthorRepositoryTests
 {
     [Fact]
-    public async Task FindAuthorByName_ReturnsAuthor_WhenAuthorExists()
+    public async Task FindAuthorByName_ReturnsAuthorDTO_WhenAuthorExists()
     {
         // Arrange
         using var connection = new SqliteConnection("Filename=:memory:");
@@ -36,7 +36,6 @@ public class AuthorRepositoryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("TestAuthor", result.UserName);
-        Assert.Equal("test@example.com", result.Email);
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public class AuthorRepositoryTests
     }
 
     [Fact]
-    public async Task FindAuthorByEmail_ReturnsAuthor_WhenAuthorExists()
+    public async Task FindAuthorByEmail_ReturnsAuthorDTO_WhenAuthorExists()
     {
         // Arrange
         using var connection = new SqliteConnection("Filename=:memory:");
@@ -88,7 +87,6 @@ public class AuthorRepositoryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("TestAuthor", result.UserName);
-        Assert.Equal("test@example.com", result.Email);
     }
 
     [Fact]

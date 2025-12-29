@@ -113,7 +113,7 @@ public class AuthorRepositoryFollowTests
         // Assert
         var following = await repository.GetFollowing("Author1");
         Assert.Single(following);
-        Assert.Equal("Author2", following[0]);
+        Assert.Equal("Author2", following[0].UserName);
     }
 
     [Fact]
@@ -312,8 +312,8 @@ public class AuthorRepositoryFollowTests
 
         // Assert
         Assert.Equal(2, following.Count);
-        Assert.Contains("Author2", following);
-        Assert.Contains("Author3", following);
+        Assert.Contains(following, f => f.UserName == "Author2");
+        Assert.Contains(following, f => f.UserName == "Author3");
     }
 
     [Fact]

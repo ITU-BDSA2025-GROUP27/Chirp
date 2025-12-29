@@ -8,7 +8,7 @@ public interface ICheepService
     List<CheepDTO> GetCheepsByHashtag(string tagName, int page = 1);
     Task CreateCheep(string authorName, string authorEmail, string text);
     Task<bool> IsFollowing(string followerName, string followedName);
-    Task<List<string>> GetFollowing(string authorName);
+    Task<List<AuthorDTO>> GetFollowing(string authorName);
     Task FollowAuthor(string followerName, string followedName);
     Task UnfollowAuthor(string followerName, string followedName);
 }

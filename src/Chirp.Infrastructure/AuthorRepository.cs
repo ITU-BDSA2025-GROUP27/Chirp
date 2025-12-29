@@ -12,16 +12,20 @@ public class AuthorRepository : IAuthorRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Author?> FindAuthorByName(string name)
+    public async Task<AuthorDTO?> FindAuthorByName(string name)
     {
-        return await _dbContext.Authors
+        var author = await _dbContext.Authors
             .FirstOrDefaultAsync(a => a.UserName == name);
+
+        return author != null ? new AuthorDTO(author.UserName!) : null;
     }
 
-    public async Task<Author?> FindAuthorByEmail(string email)
+    public async Task<AuthorDTO?> FindAuthorByEmail(string email)
     {
-        return await _dbContext.Authors
+        var author = await _dbContext.Authors
             .FirstOrDefaultAsync(a => a.Email == email);
+
+        return author != null ? new AuthorDTO(author.UserName!) : null;
     }
 
     public async Task<bool> IsFollowing(string followerName, string followedName)
@@ -35,15 +39,15 @@ public class AuthorRepository : IAuthorRepository
         return follower.Following.Any(a => a.UserName == followedName);
     }
 
-    public async Task<List<string>> GetFollowing(string authorName)
+    public async Task<List<AuthorDTO>> GetFollowing(string authorName)
     {
-        var author = await _dbContext.Authors
-            .Include(a => a.Following)
-            .FirstOrDefaultAsync(a => a.UserName == authorName);
+        var query = (from author in _dbContext.Authors
+                    where author.UserName == authorName
+                    from followedAuthor in author.Following
+                    select new AuthorDTO(followedAuthor.UserName!));
 
-        if (author == null) return new List<string>();
-
-        return author.Following.Select(a => a.UserName!).ToList();
+        var result = await query.ToListAsync();
+        return result;
     }
 
     public async Task CreateAuthor(Author author)
