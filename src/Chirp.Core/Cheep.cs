@@ -13,4 +13,5 @@ public class Cheep
     public DateTime TimeStamp { get; set; }
     public int AuthorId { get; set; }
     public required Author Author { get; set; }
+    public ICollection<Hashtag> Hashtags { get; set; } = new List<Hashtag>();
 }

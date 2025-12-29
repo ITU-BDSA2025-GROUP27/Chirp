@@ -1,18 +1,12 @@
-﻿@page "/{author}"
-@model Chirp.Web.Pages.UserTimelineModel
+@page "/hashtag/{tagName}"
+@model Chirp.Web.Pages.HashtagModel
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("author");
 }
 
 <div>
-    <h2> @routeName's Timeline </h2>
-
-    @if (User.Identity!.IsAuthenticated)
-    {
-        <partial name="_CheepCreationPartial" for="Input" />
-    }
+    <h2> #@Model.HashtagName Timeline </h2>
 
     @if (Model.Cheeps.Any())
     {
@@ -32,7 +26,7 @@
                         @if (Model.Following.Contains(cheep.Author))
                         {
                             <form method="post">
-                                <button type="submit" asp-page-handler="Unfollow" asp-route-author="@routeName" asp-route-authorName="@cheep.Author">
+                                <button type="submit" asp-page-handler="Unfollow" asp-route-tagName="@Model.HashtagName" asp-route-authorName="@cheep.Author">
                                     unfollow
                                 </button>
                             </form>
@@ -40,7 +34,7 @@
                         else
                         {
                             <form method="post">
-                                <button type="submit" asp-page-handler="Follow" asp-route-author="@routeName" asp-route-authorName="@cheep.Author">
+                                <button type="submit" asp-page-handler="Follow" asp-route-tagName="@Model.HashtagName" asp-route-authorName="@cheep.Author">
                                     follow
                                 </button>
                             </form>

@@ -28,6 +28,7 @@ builder.Services.AddAuthentication()
     });
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IHashtagRepository, HashtagRepository>();
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<ICheepService, CheepService>();
 
