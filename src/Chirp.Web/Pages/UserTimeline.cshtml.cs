@@ -9,6 +9,7 @@ public class UserTimelineModel : PageModel
     private readonly ICheepService _service;
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
+    public PaginationViewModel Pagination { get; set; } = new();
 
     [BindProperty]
     public CheepInputModel Input { get; set; } = new();
@@ -35,6 +36,13 @@ public class UserTimelineModel : PageModel
             // Viewing someone elses timeline - show only their cheeps
             Cheeps = _service.GetCheepsFromAuthor(author, page);
         }
+
+        Pagination = new PaginationViewModel
+        {
+            CurrentPage = page,
+            CheepCount = Cheeps.Count,
+            BaseUrl = $"/{author}"
+        };
 
         await LoadFollowingAsync();
         return Page();
