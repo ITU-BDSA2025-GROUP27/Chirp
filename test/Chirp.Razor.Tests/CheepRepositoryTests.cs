@@ -37,7 +37,8 @@ public class CheepRepositoryTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         var result = await repository.GetCheeps(1);
@@ -92,7 +93,8 @@ public class CheepRepositoryTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         var result = await repository.GetCheepsByAuthor("Author1", 1);
@@ -140,7 +142,8 @@ public class CheepRepositoryTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         var result = await repository.GetCheeps(1);
@@ -185,7 +188,8 @@ public class CheepRepositoryTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         var page1 = await repository.GetCheeps(1);
@@ -218,7 +222,8 @@ public class CheepRepositoryTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         await cheepRepository.CreateCheep("ExistingAuthor", "existing@example.com", "This is a new cheep");
@@ -242,7 +247,8 @@ public class CheepRepositoryTests
         await context.Database.EnsureCreatedAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
 
         // Act
         await cheepRepository.CreateCheep("NewAuthor", "new@example.com", "First cheep by new author");

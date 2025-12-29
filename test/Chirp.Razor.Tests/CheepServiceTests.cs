@@ -34,7 +34,8 @@ public class CheepServiceTests
         await context.Database.EnsureCreatedAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -59,7 +60,8 @@ public class CheepServiceTests
         await context.Database.EnsureCreatedAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -83,7 +85,8 @@ public class CheepServiceTests
         await context.Database.EnsureCreatedAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
