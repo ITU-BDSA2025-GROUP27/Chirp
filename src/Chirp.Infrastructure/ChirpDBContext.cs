@@ -9,6 +9,8 @@ public class ChirpDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
 {
     public DbSet<Cheep> Cheeps { get; set; }
     public DbSet<Author> Authors { get; set; }
+    public DbSet<Hashtag> Hashtags { get; set; }
+    public DbSet<CheepHashtag> CheepHashtags { get; set; }
 
     public ChirpDBContext(DbContextOptions<ChirpDBContext> options) : base(options)
     {
@@ -28,5 +30,14 @@ public class ChirpDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
             .WithOne(c => c.Author)
             .HasForeignKey(c => c.AuthorId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Hashtag>()
+            .HasIndex(h => h.TagName)
+            .IsUnique();
+
+        modelBuilder.Entity<Cheep>()
+            .HasMany(c => c.Hashtags)
+            .WithMany(h => h.Cheeps)
+            .UsingEntity<CheepHashtag>();
     }
 }

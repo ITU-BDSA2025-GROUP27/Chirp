@@ -46,7 +46,8 @@ public class FollowIntegrationTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Bella follows Cheryl (initial state)
@@ -135,7 +136,8 @@ public class FollowIntegrationTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps
@@ -214,7 +216,8 @@ public class FollowIntegrationTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps
@@ -267,7 +270,8 @@ public class FollowIntegrationTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act - Anna follows Bella (but not vice versa)

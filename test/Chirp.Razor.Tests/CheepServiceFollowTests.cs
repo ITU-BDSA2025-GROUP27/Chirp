@@ -51,7 +51,8 @@ public class CheepServiceFollowTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -121,7 +122,8 @@ public class CheepServiceFollowTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author1", "Author2");
@@ -182,7 +184,8 @@ public class CheepServiceFollowTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author1", "Author2");
@@ -249,7 +252,8 @@ public class CheepServiceFollowTests
         await context.SaveChangesAsync();
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository);
+        IHashtagRepository hashtagRepository = new HashtagRepository(context);
+        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author2", "Author3");

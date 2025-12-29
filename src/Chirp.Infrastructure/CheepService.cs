@@ -28,6 +28,11 @@ public class CheepService : ICheepService
         return _cheepRepository.GetCheepsByAuthors(authors, page).Result;
     }
 
+    public List<CheepDTO> GetCheepsByHashtag(string tagName, int page = 1)
+    {
+        return _cheepRepository.GetCheepsByHashtag(tagName, page).Result;
+    }
+
     public async Task CreateCheep(string authorName, string authorEmail, string text)
     {
         await _cheepRepository.CreateCheep(authorName, authorEmail, text);
