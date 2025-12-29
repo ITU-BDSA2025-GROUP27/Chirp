@@ -9,5 +9,5 @@ public interface ICheepRepository
     Task<List<CheepDTO>> GetCheepsByHashtag(string tagName, int page);
 
     // Commands
-    Task CreateCheep(string authorName, string authorEmail, string text);
+    Task CreateCheep(string authorName, string text);
 }

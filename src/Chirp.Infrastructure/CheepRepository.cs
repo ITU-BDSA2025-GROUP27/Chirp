@@ -6,13 +6,11 @@ namespace Chirp.Infrastructure;
 public class CheepRepository : ICheepRepository
 {
     private readonly ChirpDBContext _dbContext;
-    private readonly IAuthorRepository _authorRepository;
     private readonly IHashtagRepository _hashtagRepository;
 
-    public CheepRepository(ChirpDBContext dbContext, IAuthorRepository authorRepository, IHashtagRepository hashtagRepository)
+    public CheepRepository(ChirpDBContext dbContext, IHashtagRepository hashtagRepository)
     {
         _dbContext = dbContext;
-        _authorRepository = authorRepository;
         _hashtagRepository = hashtagRepository;
     }
 
@@ -83,19 +81,14 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
-    public async Task CreateCheep(string authorName, string authorEmail, string text)
+    public async Task CreateCheep(string authorName, string text)
     {
-        // Find or create author
-        var author = await _authorRepository.FindAuthorByName(authorName);
+        var author = await _dbContext.Authors
+            .FirstOrDefaultAsync(a => a.UserName == authorName);
+
         if (author == null)
         {
-            author = new Author
-            {
-                UserName = authorName,
-                Email = authorEmail,
-                Cheeps = new List<Cheep>()
-            };
-            await _authorRepository.CreateAuthor(author);
+            return;
         }
 
         // Create cheep

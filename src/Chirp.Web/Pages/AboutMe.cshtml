@@ -22,7 +22,7 @@
                 @foreach (var followedUser in Model.Following)
                 {
                     <li style="margin: 5px 0;">
-                        <a href="/@followedUser">@followedUser</a>
+                        <a href="/@followedUser.UserName">@followedUser.UserName</a>
                     </li>
                 }
             </ul>

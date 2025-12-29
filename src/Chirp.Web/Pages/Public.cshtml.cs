@@ -73,7 +73,7 @@ public class PublicModel : PageModel
 
             foreach (var user in followedUsers)
             {
-                Following.Add(user);
+                Following.Add(user.UserName);
             }
         }
     }

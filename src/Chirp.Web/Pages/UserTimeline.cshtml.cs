@@ -26,7 +26,8 @@ public class UserTimelineModel : PageModel
         {
             // Viewing own timeline - show own cheeps + followed users cheeps
             var following = await _service.GetFollowing(author);
-            var authors = new List<string>(following) { author };
+            var authors = following.Select(f => f.UserName).ToList();
+            authors.Add(author);
             Cheeps = _service.GetCheepsFromAuthors(authors, page);
         }
         else
@@ -49,7 +50,8 @@ public class UserTimelineModel : PageModel
             {
                 // Viewing own timeline - show own cheeps + followed users cheeps
                 var following = await _service.GetFollowing(author);
-                var authors = new List<string>(following) { author };
+                var authors = following.Select(f => f.UserName).ToList();
+                authors.Add(author);
                 Cheeps = _service.GetCheepsFromAuthors(authors, 1);
             }
             else
@@ -101,7 +103,7 @@ public class UserTimelineModel : PageModel
 
             foreach (var user in followedUsers)
             {
-                Following.Add(user);
+                Following.Add(user.UserName);
             }
         }
     }
