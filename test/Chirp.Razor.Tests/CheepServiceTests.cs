@@ -35,7 +35,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -61,7 +61,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -86,7 +86,7 @@ public class CheepServiceTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act

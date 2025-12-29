@@ -36,9 +36,8 @@ public class CheepRepositoryTests
         context.Cheeps.Add(cheep);
         await context.SaveChangesAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository repository = new CheepRepository(context, hashtagRepository);
 
         // Act
         var result = await repository.GetCheeps(1);
@@ -92,9 +91,8 @@ public class CheepRepositoryTests
         context.Cheeps.AddRange(cheep1, cheep2);
         await context.SaveChangesAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository repository = new CheepRepository(context, hashtagRepository);
 
         // Act
         var result = await repository.GetCheepsByAuthor("Author1", 1);
@@ -141,9 +139,8 @@ public class CheepRepositoryTests
         context.Cheeps.AddRange(oldCheep, newCheep);
         await context.SaveChangesAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository repository = new CheepRepository(context, hashtagRepository);
 
         // Act
         var result = await repository.GetCheeps(1);
@@ -187,9 +184,8 @@ public class CheepRepositoryTests
 
         await context.SaveChangesAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository repository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository repository = new CheepRepository(context, hashtagRepository);
 
         // Act
         var page1 = await repository.GetCheeps(1);
@@ -221,12 +217,11 @@ public class CheepRepositoryTests
         context.Authors.Add(author);
         await context.SaveChangesAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
 
         // Act
-        await cheepRepository.CreateCheep("ExistingAuthor", "existing@example.com", "This is a new cheep");
+        await cheepRepository.CreateCheep("ExistingAuthor", "This is a new cheep");
 
         // Assert
         var cheeps = await context.Cheeps.Include(c => c.Author).ToListAsync();
@@ -236,7 +231,7 @@ public class CheepRepositoryTests
     }
 
     [Fact]
-    public async Task CreateCheep_CreatesNewAuthorAndCheep_WhenAuthorDoesNotExist()
+    public async Task CreateCheep_DoesNotCreateCheep_WhenAuthorDoesNotExist()
     {
         // Arrange
         using var connection = new SqliteConnection("Filename=:memory:");
@@ -246,22 +241,14 @@ public class CheepRepositoryTests
         using var context = new ChirpDBContext(builder.Options);
         await context.Database.EnsureCreatedAsync();
 
-        IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
 
         // Act
-        await cheepRepository.CreateCheep("NewAuthor", "new@example.com", "First cheep by new author");
+        await cheepRepository.CreateCheep("NonExistentAuthor", "This should not be created");
 
         // Assert
-        var authors = await context.Authors.ToListAsync();
-        Assert.Single(authors);
-        Assert.Equal("NewAuthor", authors[0].UserName);
-        Assert.Equal("new@example.com", authors[0].Email);
-
-        var cheeps = await context.Cheeps.Include(c => c.Author).ToListAsync();
-        Assert.Single(cheeps);
-        Assert.Equal("First cheep by new author", cheeps[0].Text);
-        Assert.Equal("NewAuthor", cheeps[0].Author.UserName);
+        var cheeps = await context.Cheeps.ToListAsync();
+        Assert.Empty(cheeps);
     }
 }

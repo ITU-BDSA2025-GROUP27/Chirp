@@ -52,7 +52,7 @@ public class CheepServiceFollowTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -123,14 +123,15 @@ public class CheepServiceFollowTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author1", "Author2");
 
         // Act
         var following = await cheepService.GetFollowing("Author1");
-        var authors = new List<string>(following) { "Author1" };
+        var authors = following.Select(f => f.UserName).ToList();
+        authors.Add("Author1");
         var cheeps = cheepService.GetCheepsFromAuthors(authors, 1);
 
         // Assert
@@ -185,7 +186,7 @@ public class CheepServiceFollowTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author1", "Author2");
@@ -193,7 +194,8 @@ public class CheepServiceFollowTests
 
         // Act
         var following = await cheepService.GetFollowing("Author1");
-        var authors = new List<string>(following) { "Author1" };
+        var authors = following.Select(f => f.UserName).ToList();
+        authors.Add("Author1");
         var cheeps = cheepService.GetCheepsFromAuthors(authors, 1);
 
         // Assert
@@ -253,7 +255,7 @@ public class CheepServiceFollowTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.FollowAuthor("Author2", "Author3");

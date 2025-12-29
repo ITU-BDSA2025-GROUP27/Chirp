@@ -30,7 +30,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -72,7 +72,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
@@ -114,7 +114,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act - Create three cheeps with the same hashtag
@@ -157,7 +157,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps with different hashtags
@@ -196,7 +196,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheep with hashtag
@@ -233,7 +233,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         await cheepService.CreateCheep("TestAuthor", "test@example.com", "Test cheep without hashtag");
@@ -268,7 +268,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create cheeps with delays to ensure different timestamps
@@ -311,7 +311,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Create 35 cheeps with the same hashtag (page size is 32)
@@ -352,7 +352,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act - Create cheep with duplicate hashtag
@@ -398,7 +398,7 @@ public class HashtagIntegrationTests
 
         IAuthorRepository authorRepository = new AuthorRepository(context);
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
-        ICheepRepository cheepRepository = new CheepRepository(context, authorRepository, hashtagRepository);
+        ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act - Both authors use the same hashtag
