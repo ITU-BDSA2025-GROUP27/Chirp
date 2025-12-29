@@ -10,6 +10,7 @@ public class HashtagModel : PageModel
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
     public required string HashtagName { get; set; }
+    public PaginationViewModel Pagination { get; set; } = new();
 
     public HashtagModel(ICheepService service)
     {
@@ -20,11 +21,17 @@ public class HashtagModel : PageModel
     {
         if (string.IsNullOrWhiteSpace(tagName))
         {
-            return RedirectToPage("Public");
+            return Redirect("/");
         }
 
         HashtagName = tagName;
         Cheeps = _service.GetCheepsByHashtag(tagName, page);
+        Pagination = new PaginationViewModel
+        {
+            CurrentPage = page,
+            CheepCount = Cheeps.Count,
+            BaseUrl = $"/hashtag/{tagName}"
+        };
         await LoadFollowingAsync();
         return Page();
     }

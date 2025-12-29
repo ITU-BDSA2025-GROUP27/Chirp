@@ -20,7 +20,7 @@ public class AboutMeModel : PageModel
     public string Email { get; set; } = string.Empty;
     public List<AuthorDTO> Following { get; set; } = new();
     public List<CheepDTO> Cheeps { get; set; } = new();
-    public int CurrentPage { get; set; } = 1;
+    public PaginationViewModel Pagination { get; set; } = new();
 
     public AboutMeModel(ICheepService cheepService, IAuthorRepository authorRepository,
         UserManager<Author> userManager, SignInManager<Author> signInManager)
@@ -38,11 +38,16 @@ public class AboutMeModel : PageModel
             return RedirectToPage("/Public");
         }
 
-        CurrentPage = page;
         UserName = User.Identity.Name;
         Email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
 
         Cheeps = _cheepService.GetCheepsFromAuthor(UserName, page);
+        Pagination = new PaginationViewModel
+        {
+            CurrentPage = page,
+            CheepCount = Cheeps.Count,
+            BaseUrl = "/aboutme"
+        };
 
         Following = await _cheepService.GetFollowing(UserName);
 

@@ -9,6 +9,7 @@ public class PublicModel : PageModel
     private readonly ICheepService _service;
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
+    public PaginationViewModel Pagination { get; set; } = new();
 
     [BindProperty]
     public CheepInputModel Input { get; set; } = new();
@@ -21,6 +22,12 @@ public class PublicModel : PageModel
     public async Task<ActionResult> OnGet([FromQuery] int page = 1)
     {
         Cheeps = _service.GetCheeps(page);
+        Pagination = new PaginationViewModel
+        {
+            CurrentPage = page,
+            CheepCount = Cheeps.Count,
+            BaseUrl = "/"
+        };
         await LoadFollowingAsync();
         return Page();
     }
@@ -42,7 +49,7 @@ public class PublicModel : PageModel
             await _service.CreateCheep(userName, userEmail, Input.Text);
         }
 
-        return RedirectToPage("Public");
+        return Redirect("/");
     }
 
     public async Task<IActionResult> OnPostFollow(string authorName)
@@ -52,7 +59,7 @@ public class PublicModel : PageModel
         {
             await _service.FollowAuthor(userName, authorName);
         }
-        return RedirectToPage("Public");
+        return Redirect("/");
     }
 
     public async Task<IActionResult> OnPostUnfollow(string authorName)
@@ -62,7 +69,7 @@ public class PublicModel : PageModel
         {
             await _service.UnfollowAuthor(userName, authorName);
         }
-        return RedirectToPage("Public");
+        return Redirect("/");
     }
 
     private async Task LoadFollowingAsync()
