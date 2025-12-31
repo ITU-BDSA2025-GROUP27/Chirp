@@ -6,7 +6,8 @@ namespace Chirp.Web.Pages;
 
 public class PublicModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepService _cheepService;
+    private readonly IAuthorService _authorService;
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
     public PaginationViewModel Pagination { get; set; } = new();
@@ -14,14 +15,15 @@ public class PublicModel : PageModel
     [BindProperty]
     public CheepInputModel Input { get; set; } = new();
 
-    public PublicModel(ICheepService service)
+    public PublicModel(ICheepService cheepService, IAuthorService authorService)
     {
-        _service = service;
+        _cheepService = cheepService;
+        _authorService = authorService;
     }
 
     public async Task<ActionResult> OnGet([FromQuery] int page = 1)
     {
-        Cheeps = _service.GetCheeps(page);
+        Cheeps = _cheepService.GetCheeps(page);
         Pagination = new PaginationViewModel
         {
             CurrentPage = page,
@@ -36,7 +38,7 @@ public class PublicModel : PageModel
     {
         if (!ModelState.IsValid)
         {
-            Cheeps = _service.GetCheeps(1);
+            Cheeps = _cheepService.GetCheeps(1);
             await LoadFollowingAsync();
             return Page();
         }
@@ -46,7 +48,7 @@ public class PublicModel : PageModel
 
         if (userName != null && userEmail != null)
         {
-            await _service.CreateCheep(userName, userEmail, Input.Text);
+            await _cheepService.CreateCheep(userName, userEmail, Input.Text);
         }
 
         return Redirect("/");
@@ -57,7 +59,7 @@ public class PublicModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.FollowAuthor(userName, authorName);
+            await _authorService.FollowAuthor(userName, authorName);
         }
         return Redirect("/");
     }
@@ -67,7 +69,7 @@ public class PublicModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.UnfollowAuthor(userName, authorName);
+            await _authorService.UnfollowAuthor(userName, authorName);
         }
         return Redirect("/");
     }
@@ -76,7 +78,7 @@ public class PublicModel : PageModel
     {
         if (User.Identity?.IsAuthenticated == true && User.Identity.Name != null)
         {
-            var followedUsers = await _service.GetFollowing(User.Identity.Name);
+            var followedUsers = await _authorService.GetFollowing(User.Identity.Name);
 
             foreach (var user in followedUsers)
             {
