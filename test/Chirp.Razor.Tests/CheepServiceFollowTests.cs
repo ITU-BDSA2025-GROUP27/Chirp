@@ -125,11 +125,12 @@ public class CheepServiceFollowTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
-        await cheepService.FollowAuthor("Author1", "Author2");
+        await authorService.FollowAuthor("Author1", "Author2");
 
         // Act
-        var following = await cheepService.GetFollowing("Author1");
+        var following = await authorService.GetFollowing("Author1");
         var authors = following.Select(f => f.UserName).ToList();
         authors.Add("Author1");
         var cheeps = cheepService.GetCheepsFromAuthors(authors, 1);
@@ -188,12 +189,13 @@ public class CheepServiceFollowTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
-        await cheepService.FollowAuthor("Author1", "Author2");
-        await cheepService.UnfollowAuthor("Author1", "Author2");
+        await authorService.FollowAuthor("Author1", "Author2");
+        await authorService.UnfollowAuthor("Author1", "Author2");
 
         // Act
-        var following = await cheepService.GetFollowing("Author1");
+        var following = await authorService.GetFollowing("Author1");
         var authors = following.Select(f => f.UserName).ToList();
         authors.Add("Author1");
         var cheeps = cheepService.GetCheepsFromAuthors(authors, 1);
@@ -257,8 +259,9 @@ public class CheepServiceFollowTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
-        await cheepService.FollowAuthor("Author2", "Author3");
+        await authorService.FollowAuthor("Author2", "Author3");
 
         // Act
         var author2Cheeps = cheepService.GetCheepsFromAuthor("Author2", 1);

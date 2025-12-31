@@ -49,9 +49,10 @@ public class FollowIntegrationTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
         // Bella follows Cheryl (initial state)
-        await cheepService.FollowAuthor("Bella", "Cheryl");
+        await authorService.FollowAuthor("Bella", "Cheryl");
 
         // Anna sends a cheep
         await cheepService.CreateCheep("Anna", "anna@example.com", "Anna's first cheep");
@@ -65,11 +66,11 @@ public class FollowIntegrationTests
         await cheepService.CreateCheep("Cheryl", "cheryl@example.com", "Cheryl's cheep 2");
 
         // Act - Anna follows both Bella and Cheryl
-        await cheepService.FollowAuthor("Anna", "Bella");
-        await cheepService.FollowAuthor("Anna", "Cheryl");
+        await authorService.FollowAuthor("Anna", "Bella");
+        await authorService.FollowAuthor("Anna", "Cheryl");
 
         // Assert - Anna's timeline shows her own cheeps + Bella's + Cheryl's
-        var annaFollowing = await cheepService.GetFollowing("Anna");
+        var annaFollowing = await authorService.GetFollowing("Anna");
         var annaTimelineAuthors = annaFollowing.Select(f => f.UserName).ToList();
         annaTimelineAuthors.Add("Anna");
         var annaTimeline = cheepService.GetCheepsFromAuthors(annaTimelineAuthors, 1);
@@ -85,12 +86,12 @@ public class FollowIntegrationTests
         Assert.All(bellaTimeline, c => Assert.Equal("Bella", c.Author));
 
         // Assert - Anna cannot follow herself
-        await cheepService.FollowAuthor("Anna", "Anna");
-        var annaSelfFollow = await cheepService.IsFollowing("Anna", "Anna");
+        await authorService.FollowAuthor("Anna", "Anna");
+        var annaSelfFollow = await authorService.IsFollowing("Anna", "Anna");
         Assert.False(annaSelfFollow);
 
         // Assert - Bella's timeline shows her own cheeps + Cheryl's cheeps
-        var bellaFollowing = await cheepService.GetFollowing("Bella");
+        var bellaFollowing = await authorService.GetFollowing("Bella");
         var bellaTimelineAuthors = bellaFollowing.Select(f => f.UserName).ToList();
         bellaTimelineAuthors.Add("Bella");
         var bellaOwnTimeline = cheepService.GetCheepsFromAuthors(bellaTimelineAuthors, 1);
@@ -141,6 +142,7 @@ public class FollowIntegrationTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
         // Create cheeps
         await cheepService.CreateCheep("Anna", "anna@example.com", "Anna's cheep");
@@ -148,22 +150,22 @@ public class FollowIntegrationTests
         await cheepService.CreateCheep("Cheryl", "cheryl@example.com", "Cheryl's cheep");
 
         // Bella follows Cheryl, Anna follows both Bella and Cheryl
-        await cheepService.FollowAuthor("Bella", "Cheryl");
-        await cheepService.FollowAuthor("Anna", "Bella");
-        await cheepService.FollowAuthor("Anna", "Cheryl");
+        await authorService.FollowAuthor("Bella", "Cheryl");
+        await authorService.FollowAuthor("Anna", "Bella");
+        await authorService.FollowAuthor("Anna", "Cheryl");
 
         // Verify initial state - Anna sees all three
-        var annaFollowing = await cheepService.GetFollowing("Anna");
+        var annaFollowing = await authorService.GetFollowing("Anna");
         var annaTimelineAuthors = annaFollowing.Select(f => f.UserName).ToList();
         annaTimelineAuthors.Add("Anna");
         var annaTimelineBefore = cheepService.GetCheepsFromAuthors(annaTimelineAuthors, 1);
         Assert.Equal(3, annaTimelineBefore.Count);
 
         // Act - Anna unfollows Bella
-        await cheepService.UnfollowAuthor("Anna", "Bella");
+        await authorService.UnfollowAuthor("Anna", "Bella");
 
         // Assert - Anna's timeline now shows only her own cheeps and Cheryl's
-        var annaFollowingAfter = await cheepService.GetFollowing("Anna");
+        var annaFollowingAfter = await authorService.GetFollowing("Anna");
         var annaTimelineAuthorsAfter = annaFollowingAfter.Select(f => f.UserName).ToList();
         annaTimelineAuthorsAfter.Add("Anna");
         var annaTimelineAfter = cheepService.GetCheepsFromAuthors(annaTimelineAuthorsAfter, 1);
@@ -174,12 +176,12 @@ public class FollowIntegrationTests
         Assert.DoesNotContain(annaTimelineAfter, c => c.Author == "Bella");
 
         // Assert - Anna is now only following Cheryl
-        var annaFollowingList = await cheepService.GetFollowing("Anna");
+        var annaFollowingList = await authorService.GetFollowing("Anna");
         Assert.Single(annaFollowingList);
         Assert.Equal("Cheryl", annaFollowingList[0].UserName);
 
         // Assert - Bella still follows Cheryl (Anna's action didn't affect Bella)
-        var bellaFollowing = await cheepService.GetFollowing("Bella");
+        var bellaFollowing = await authorService.GetFollowing("Bella");
         Assert.Single(bellaFollowing);
         Assert.Equal("Cheryl", bellaFollowing[0].UserName);
     }
@@ -223,6 +225,7 @@ public class FollowIntegrationTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
         // Create cheeps
         await cheepService.CreateCheep("Anna", "anna@example.com", "Anna's cheep");
@@ -231,7 +234,7 @@ public class FollowIntegrationTests
         await cheepService.CreateCheep("Cheryl", "cheryl@example.com", "Cheryl's cheep");
 
         // Bella follows Cheryl
-        await cheepService.FollowAuthor("Bella", "Cheryl");
+        await authorService.FollowAuthor("Bella", "Cheryl");
 
         // Act & Assert - When Anna (or anyone) views Bella's timeline, only Bella's cheeps are shown
         var bellaTimeline = cheepService.GetCheepsFromAuthor("Bella", 1);
@@ -277,13 +280,14 @@ public class FollowIntegrationTests
         IHashtagRepository hashtagRepository = new HashtagRepository(context);
         ICheepRepository cheepRepository = new CheepRepository(context, hashtagRepository);
         ICheepService cheepService = new CheepService(cheepRepository, authorRepository);
+        IAuthorService authorService = new AuthorService(authorRepository);
 
         // Act - Anna follows Bella (but not vice versa)
-        await cheepService.FollowAuthor("Anna", "Bella");
+        await authorService.FollowAuthor("Anna", "Bella");
 
         // Assert
-        var annaFollowsBella = await cheepService.IsFollowing("Anna", "Bella");
-        var bellaFollowsAnna = await cheepService.IsFollowing("Bella", "Anna");
+        var annaFollowsBella = await authorService.IsFollowing("Anna", "Bella");
+        var bellaFollowsAnna = await authorService.IsFollowing("Bella", "Anna");
 
         Assert.True(annaFollowsBella);
         Assert.False(bellaFollowsAnna);
