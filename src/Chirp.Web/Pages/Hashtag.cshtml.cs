@@ -6,15 +6,17 @@ namespace Chirp.Web.Pages;
 
 public class HashtagModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepService _cheepService;
+    private readonly IAuthorService _authorService;
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
     public required string HashtagName { get; set; }
     public PaginationViewModel Pagination { get; set; } = new();
 
-    public HashtagModel(ICheepService service)
+    public HashtagModel(ICheepService cheepService, IAuthorService authorService)
     {
-        _service = service;
+        _cheepService = cheepService;
+        _authorService = authorService;
     }
 
     public async Task<ActionResult> OnGet(string tagName, [FromQuery] int page = 1)
@@ -25,7 +27,7 @@ public class HashtagModel : PageModel
         }
 
         HashtagName = tagName;
-        Cheeps = _service.GetCheepsByHashtag(tagName, page);
+        Cheeps = _cheepService.GetCheepsByHashtag(tagName, page);
         Pagination = new PaginationViewModel
         {
             CurrentPage = page,
@@ -41,7 +43,7 @@ public class HashtagModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.FollowAuthor(userName, authorName);
+            await _authorService.FollowAuthor(userName, authorName);
         }
         return RedirectToPage("Hashtag", new { tagName });
     }
@@ -51,7 +53,7 @@ public class HashtagModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.UnfollowAuthor(userName, authorName);
+            await _authorService.UnfollowAuthor(userName, authorName);
         }
         return RedirectToPage("Hashtag", new { tagName });
     }
@@ -60,7 +62,7 @@ public class HashtagModel : PageModel
     {
         if (User.Identity?.IsAuthenticated == true && User.Identity.Name != null)
         {
-            var followedUsers = await _service.GetFollowing(User.Identity.Name);
+            var followedUsers = await _authorService.GetFollowing(User.Identity.Name);
 
             foreach (var user in followedUsers)
             {

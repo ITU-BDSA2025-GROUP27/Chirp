@@ -6,7 +6,8 @@ namespace Chirp.Web.Pages;
 
 public class UserTimelineModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepService _cheepService;
+    private readonly IAuthorService _authorService;
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
     public PaginationViewModel Pagination { get; set; } = new();
@@ -14,9 +15,10 @@ public class UserTimelineModel : PageModel
     [BindProperty]
     public CheepInputModel Input { get; set; } = new();
 
-    public UserTimelineModel(ICheepService service)
+    public UserTimelineModel(ICheepService cheepService, IAuthorService authorService)
     {
-        _service = service;
+        _cheepService = cheepService;
+        _authorService = authorService;
     }
 
     public async Task<ActionResult> OnGet(string author, [FromQuery] int page = 1)
@@ -26,15 +28,15 @@ public class UserTimelineModel : PageModel
         if (viewingUser != null && viewingUser == author)
         {
             // Viewing own timeline - show own cheeps + followed users cheeps
-            var following = await _service.GetFollowing(author);
+            var following = await _authorService.GetFollowing(author);
             var authors = following.Select(f => f.UserName).ToList();
             authors.Add(author);
-            Cheeps = _service.GetCheepsFromAuthors(authors, page);
+            Cheeps = _cheepService.GetCheepsFromAuthors(authors, page);
         }
         else
         {
             // Viewing someone elses timeline - show only their cheeps
-            Cheeps = _service.GetCheepsFromAuthor(author, page);
+            Cheeps = _cheepService.GetCheepsFromAuthor(author, page);
         }
 
         Pagination = new PaginationViewModel
@@ -57,15 +59,15 @@ public class UserTimelineModel : PageModel
             if (viewingUser != null && viewingUser == author)
             {
                 // Viewing own timeline - show own cheeps + followed users cheeps
-                var following = await _service.GetFollowing(author);
+                var following = await _authorService.GetFollowing(author);
                 var authors = following.Select(f => f.UserName).ToList();
                 authors.Add(author);
-                Cheeps = _service.GetCheepsFromAuthors(authors, 1);
+                Cheeps = _cheepService.GetCheepsFromAuthors(authors, 1);
             }
             else
             {
                 // Viewing someone elses timeline - show only their cheeps
-                Cheeps = _service.GetCheepsFromAuthor(author, 1);
+                Cheeps = _cheepService.GetCheepsFromAuthor(author, 1);
             }
 
             await LoadFollowingAsync();
@@ -77,7 +79,7 @@ public class UserTimelineModel : PageModel
 
         if (userName != null && userEmail != null)
         {
-            await _service.CreateCheep(userName, userEmail, Input.Text);
+            await _cheepService.CreateCheep(userName, userEmail, Input.Text);
         }
 
         return RedirectToPage("UserTimeline", new { author });
@@ -88,7 +90,7 @@ public class UserTimelineModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.FollowAuthor(userName, authorName);
+            await _authorService.FollowAuthor(userName, authorName);
         }
         return RedirectToPage("UserTimeline", new { author });
     }
@@ -98,7 +100,7 @@ public class UserTimelineModel : PageModel
         var userName = User.Identity?.Name;
         if (userName != null && authorName != null)
         {
-            await _service.UnfollowAuthor(userName, authorName);
+            await _authorService.UnfollowAuthor(userName, authorName);
         }
         return RedirectToPage("UserTimeline", new { author });
     }
@@ -107,7 +109,7 @@ public class UserTimelineModel : PageModel
     {
         if (User.Identity?.IsAuthenticated == true && User.Identity.Name != null)
         {
-            var followedUsers = await _service.GetFollowing(User.Identity.Name);
+            var followedUsers = await _authorService.GetFollowing(User.Identity.Name);
 
             foreach (var user in followedUsers)
             {

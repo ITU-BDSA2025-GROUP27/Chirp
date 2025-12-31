@@ -12,6 +12,7 @@ namespace Chirp.Web.Pages;
 public class AboutMeModel : PageModel
 {
     private readonly ICheepService _cheepService;
+    private readonly IAuthorService _authorService;
     private readonly IAuthorRepository _authorRepository;
     private readonly UserManager<Author> _userManager;
     private readonly SignInManager<Author> _signInManager;
@@ -22,10 +23,11 @@ public class AboutMeModel : PageModel
     public List<CheepDTO> Cheeps { get; set; } = new();
     public PaginationViewModel Pagination { get; set; } = new();
 
-    public AboutMeModel(ICheepService cheepService, IAuthorRepository authorRepository,
+    public AboutMeModel(ICheepService cheepService, IAuthorService authorService, IAuthorRepository authorRepository,
         UserManager<Author> userManager, SignInManager<Author> signInManager)
     {
         _cheepService = cheepService;
+        _authorService = authorService;
         _authorRepository = authorRepository;
         _userManager = userManager;
         _signInManager = signInManager;
@@ -49,7 +51,7 @@ public class AboutMeModel : PageModel
             BaseUrl = "/aboutme"
         };
 
-        Following = await _cheepService.GetFollowing(UserName);
+        Following = await _authorService.GetFollowing(UserName);
 
         return Page();
     }
@@ -64,7 +66,7 @@ public class AboutMeModel : PageModel
         var userName = User.Identity.Name;
         var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
 
-        var following = await _cheepService.GetFollowing(userName);
+        var following = await _authorService.GetFollowing(userName);
         var allCheeps = await GetAllUserCheeps(userName);
 
         using var memoryStream = new MemoryStream();
