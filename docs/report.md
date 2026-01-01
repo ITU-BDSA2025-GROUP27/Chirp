@@ -112,6 +112,17 @@ Triggered on push to main. The workflow has two jobs: Build (checkout, setup, bu
 
 ## Team work
 
+![Illustration of the project board as screenshot.](images/project_board.png)
+
+At the time of writing this report, 47 issues have been completed. One issue remains in **TODO** (Session 13 - Add code documentation) and one is **In Progress** (Session 12/13 - Report).
+All required functionality has been implemented.
+
+### Issue workflow
+
+Issues are created with the format: `Session <number> - <description>`. The issue body contains a user story at the top following the format `"In order to <receive benefit> as a <role>, I can <goal/desire>"`, followed by acceptance criteria below.
+
+A branch is created using the naming convention `<type>/<description>`, where type is `feature/`, `refactor/`, or `docs/` depending on the issue type. This follows trunk-based development with short-lived feature branches. When a feature is complete, a pull request is created that needs to pass the Build and Test workflow to be merged to main. Usually reviewers would be assigned to the pull request, but as I work alone, I was allowed by TAs to merge without having to review my own pull requests. Once merged, the branch is deleted.
+
 ## How to make _Chirp!_ work locally
 
 ## How to run test suite locally
