@@ -53,6 +53,33 @@ The server is deployed to Azure App Service. It uses a SQLite database and suppo
 
 ## User activities
 
+### Unauthenticated users
+
+- View the Public Timeline with all cheeps
+- View author Private Timelines by clicking on author names
+- Click hashtags to view all cheeps with that hashtag
+
+To access the rest of the application, they must either log in with an existing user or register a new user.
+
+![Unauthenticated user activity diagram](images/unauthenticated_user_activity.png)
+
+### Authenticated users
+
+- View the Public Timeline with all cheeps
+- View author Private Timelines by clicking on author names
+- Click hashtags to view all cheeps with that hashtag
+- Post cheeps
+- Follow and unfollow authors
+- Log out
+- View the About Me page:
+  - User information (username and email)
+  - List of followed users
+  - All user's cheeps
+  - Download personal data
+  - Delete account
+
+![Authenticated user activity diagram](images/authenticated_user_activity.png)
+
 ## Sequence of functionality/calls trough _Chirp!_
 
 # Process
