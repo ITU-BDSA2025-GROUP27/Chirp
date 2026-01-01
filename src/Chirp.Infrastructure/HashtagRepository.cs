@@ -22,13 +22,16 @@ public class HashtagRepository : IHashtagRepository
 
     public async Task<List<HashtagDTO>> GetHashtagsForCheep(int cheepId)
     {
-        var query = (from ch in _dbContext.CheepHashtags
-                    join h in _dbContext.Hashtags on ch.HashtagId equals h.HashtagId
-                    where ch.CheepId == cheepId
-                    select new HashtagDTO(h.TagName));
+        var cheep = await _dbContext.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstOrDefaultAsync(c => c.CheepId == cheepId);
 
-        var result = await query.ToListAsync();
-        return result;
+        if (cheep == null)
+        {
+            return new List<HashtagDTO>();
+        }
+
+        return cheep.Hashtags.Select(h => new HashtagDTO(h.TagName)).ToList();
     }
 
     public async Task<List<string>> GetHashtagNamesInText(string text)
@@ -71,19 +74,21 @@ public class HashtagRepository : IHashtagRepository
 
     public async Task LinkCheepToHashtag(int cheepId, int hashtagId)
     {
-        // Check if link already exists to avoid duplicates
-        var exists = await _dbContext.CheepHashtags
-            .AnyAsync(ch => ch.CheepId == cheepId && ch.HashtagId == hashtagId);
+        var cheep = await _dbContext.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstOrDefaultAsync(c => c.CheepId == cheepId);
 
-        if (!exists)
+        var hashtag = await _dbContext.Hashtags
+            .FirstOrDefaultAsync(h => h.HashtagId == hashtagId);
+
+        if (cheep == null || hashtag == null)
         {
-            var cheepHashtag = new CheepHashtag
-            {
-                CheepId = cheepId,
-                HashtagId = hashtagId
-            };
+            return;
+        }
 
-            _dbContext.CheepHashtags.Add(cheepHashtag);
+        if (!cheep.Hashtags.Contains(hashtag))
+        {
+            cheep.Hashtags.Add(hashtag);
             await _dbContext.SaveChangesAsync();
         }
     }

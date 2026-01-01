@@ -65,10 +65,9 @@ public class CheepRepository : ICheepRepository
     {
         var normalizedTag = tagName.ToLowerInvariant();
 
-        var query = (from ch in _dbContext.CheepHashtags
-                    join h in _dbContext.Hashtags on ch.HashtagId equals h.HashtagId
-                    join c in _dbContext.Cheeps on ch.CheepId equals c.CheepId
+        var query = (from h in _dbContext.Hashtags
                     where h.TagName == normalizedTag
+                    from c in h.Cheeps
                     orderby c.TimeStamp descending
                     select new CheepDTO(
                         c.Author.UserName!,
