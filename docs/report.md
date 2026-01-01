@@ -210,3 +210,8 @@ dotnet test
 The project uses the MIT License. This license was chosen for its simplicity and compatibility with dependencies.
 
 ## LLMs, ChatGPT, CoPilot, and others
+
+Claude was used for debugging when stuck on errors. It helped understand error messages and fix bugs.
+
+Commits where Claude assisted were co-authored with Claude <noreply@anthropic.com>. Files containing AI-assisted code have comments noting this.
+Claude was helpful when stuck and likely sped up development by reducing time spent on debugging.
