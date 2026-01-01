@@ -20,7 +20,7 @@ The Hashtag class contains HashtagId and TagName (with a 50-character constraint
 
 A Cheep can have multiple Hashtags, and a Hashtag can be associated with multiple Cheeps. Authors can follow multiple other Authors.
 
-![Illustration of the _Chirp!_ data model as UML class diagram.](images/domain_model.png)
+![Illustration of the _Chirp!_ data model as UML class diagram.](images/domain_model.png){ width=75% }
 
 ## Architecture — In the small
 
@@ -28,7 +28,7 @@ The application follows the Onion Architecture pattern, where each layer depends
 
 Below is the Onion Architecture diagram.
 
-![Illustration of the _Chirp!_ architecture as onion architecture diagram.](images/onion_architecture.png)
+![Illustration of the _Chirp!_ architecture as onion architecture diagram.](images/onion_architecture.png){ width=95% }
 
 ### Chirp.Core
 Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
@@ -51,7 +51,7 @@ The application follows a client-server architecture. Users access it through a 
 
 The server is deployed to Azure App Service. It uses a SQLite database and supports user authentication through both email+password and GitHub OAuth.
 
-![Illustration of the _Chirp!_ deployment architecture as deployment diagram.](images/deployment_architecture.png)
+![Illustration of the _Chirp!_ deployment architecture as deployment diagram.](images/deployment_architecture.png){ width=75% }
 
 ## User activities
 
@@ -63,7 +63,7 @@ The server is deployed to Azure App Service. It uses a SQLite database and suppo
 
 To access the rest of the application, they must either log in with an existing user or register a new user.
 
-![Illustration of unauthenticated user activities as UML activity diagram.](images/unauthenticated_user_activity.png)
+![Illustration of unauthenticated user activities as UML activity diagram.](images/unauthenticated_user_activity.png){ width=95% }
 
 ### Authenticated users
 
@@ -80,13 +80,13 @@ To access the rest of the application, they must either log in with an existing 
   - Download personal data
   - Delete account
 
-![Illustration of authenticated user activities as UML activity diagram.](images/authenticated_user_activity.png)
+![Illustration of authenticated user activities as UML activity diagram.](images/authenticated_user_activity.png){ width=95% }
 
 ## Sequence of functionality/calls trough _Chirp!_
 
 The sequence diagram shows the flow when a client requests the Public Timeline. It illustrates how the HTTP request is processed through Azure App Service, Routing, PublicModel, CheepService, CheepRepository, EF Core, and the SQLite database, then returned as rendered HTML.
 
-![Illustration of the request flow through _Chirp!_ as UML sequence diagram.](images/sequence_diagram.png)
+![Illustration of the request flow through _Chirp!_ as UML sequence diagram.](images/sequence_diagram.png){ width=95% }
 
 # Process
 
@@ -98,23 +98,23 @@ The application uses GitHub Actions workflows for automated build, test, release
 
 Triggered on push to main or Pull Request. The workflow checks out the code, sets up .NET, restores dependencies, builds the project, installs Playwright browsers, and runs tests.
 
-![Illustration of the build and test workflow as UML activity diagram.](images/build_and_test_workflow.png)
+![Illustration of the build and test workflow as UML activity diagram.](images/build_and_test_workflow.png){ width=60% }
 
 ### Release
 
 Triggered on tag v*. The workflow builds and tests the application, then publishes for Windows, macOS, and Linux in parallel. ZIP files are created and attached to a release with the version tag.
 
-![Illustration of the release workflow as UML activity diagram.](images/release_workflow.png)
+![Illustration of the release workflow as UML activity diagram.](images/release_workflow.png){ width=70% }
 
 ### Deploy to Azure
 
 Triggered on push to main. The workflow has two jobs: Build (checkout, setup, build, publish, upload artifact) and Deploy (download artifact, login to Azure, deploy to Azure App Service).
 
-![Illustration of the Azure deployment workflow as UML activity diagram.](images/azure_deploy_workflow.png)
+![Illustration of the Azure deployment workflow as UML activity diagram.](images/azure_deploy_workflow.png){ width=70% }
 
 ## Team work
 
-![Illustration of the project board as screenshot.](images/project_board.png)
+![Illustration of the project board as screenshot.](images/project_board.png){ width=95% }
 
 At the time of writing this report, 47 issues have been completed. One issue remains in **TODO** (Session 13 - Add code documentation) and one is **In Progress** (Session 12/13 - Report).
 All required functionality has been implemented.
@@ -202,6 +202,8 @@ dotnet test
 - Forget Me functionality
 - Hashtag page interactions
 - General UI interactions
+
+\newpage
 
 # Ethics
 
