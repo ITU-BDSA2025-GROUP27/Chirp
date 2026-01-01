@@ -125,6 +125,50 @@ A branch is created using the naming convention `<type>/<description>`, where ty
 
 ## How to make _Chirp!_ work locally
 
+### Prerequisites
+
+The application requires **.NET 8.0 SDK** to be installed.
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/ITU-BDSA2025-GROUP27/Chirp.git
+cd Chirp
+```
+
+### Configure GitHub OAuth
+
+To enable GitHub login, register the application on [GitHub](https://github.com/settings/applications/new).
+
+- Homepage URL: `http://localhost:5273/`
+- Authorization callback URL: `http://localhost:5273/signin-github`
+
+Set up user secrets with the following commands:
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "authentication:github:clientId" "<YOUR_CLIENTID>"
+dotnet user-secrets set "authentication:github:clientSecret" "<YOUR_CLIENTSECRET>"
+```
+
+### Run the Application
+
+From root, run:
+
+```bash
+dotnet run --project src/Chirp.Web
+```
+
+The application will:
+- Restore dependencies
+- Apply migrations
+- Seed the database with initial data
+- Start the web server
+
+### Access the Application
+
+Open a browser and navigate to `http://localhost:5273`. The application should be running with the public timeline visible.
+
 ## How to run test suite locally
 
 # Ethics
