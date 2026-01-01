@@ -26,7 +26,7 @@ The application follows the Onion Architecture pattern, where each layer depends
 
 Below is the Onion Architecture diagram.
 
-![Illustration of the _Chirp!_ application as Onion Architecture.](images/onion_architecture.png)
+![Illustration of the _Chirp!_ architecture as onion architecture diagram.](images/onion_architecture.png)
 
 ### Chirp.Core
 Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag, CheepHashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
@@ -49,7 +49,7 @@ The application follows a client-server architecture. Users access it through a 
 
 The server is deployed to Azure App Service. It uses a SQLite database and supports user authentication through both email+password and GitHub OAuth.
 
-![Deployment architecture diagram](images/deployment_architecture.png)
+![Illustration of the _Chirp!_ deployment architecture as deployment diagram.](images/deployment_architecture.png)
 
 ## User activities
 
@@ -61,7 +61,7 @@ The server is deployed to Azure App Service. It uses a SQLite database and suppo
 
 To access the rest of the application, they must either log in with an existing user or register a new user.
 
-![Unauthenticated user activity diagram](images/unauthenticated_user_activity.png)
+![Illustration of unauthenticated user activities as UML activity diagram.](images/unauthenticated_user_activity.png)
 
 ### Authenticated users
 
@@ -78,9 +78,13 @@ To access the rest of the application, they must either log in with an existing 
   - Download personal data
   - Delete account
 
-![Authenticated user activity diagram](images/authenticated_user_activity.png)
+![Illustration of authenticated user activities as UML activity diagram.](images/authenticated_user_activity.png)
 
 ## Sequence of functionality/calls trough _Chirp!_
+
+The sequence diagram shows the flow when a client requests the Public Timeline. It illustrates how the HTTP request is processed through Azure App Service, Routing, PublicModel, CheepService, CheepRepository, EF Core, and the SQLite database, then returned as rendered HTML.
+
+![Illustration of the request flow through _Chirp!_ as UML sequence diagram.](images/sequence_diagram.png)
 
 # Process
 
