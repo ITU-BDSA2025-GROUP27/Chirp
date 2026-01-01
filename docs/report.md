@@ -10,13 +10,15 @@ numbersections: true
 
 ## Domain model
 
-The Author class inherits from IdentityUser (ASP.NET Core Identity) for authentication. We have added AuthorId, Cheeps collection, and Following/Followers collections.
+The domain model consists of three main entities: Author, Cheep, and Hashtag.
 
-The Cheep class has CheepId, Text (with 160 characters constraint), TimeStamp, and reference to Author.
+The Author class inherits from IdentityUser for authentication and contains AuthorId, UserName, Email, and Id.
 
-The Hashtag class has HashtagId and TagName (with 50 characters constraint, unique).
+The Cheep class contains CheepId, Text (with a 160-character constraint), TimeStamp, and AuthorId.
 
-The many-to-many relationships are handled by two join tables: CheepHashtag (linking Cheeps and Hashtags) and AuthorFollows (linking Authors for the follow feature).
+The Hashtag class contains HashtagId and TagName (with a 50-character constraint, unique).
+
+A Cheep can have multiple Hashtags, and a Hashtag can be associated with multiple Cheeps. Authors can follow multiple other Authors.
 
 ![Illustration of the _Chirp!_ data model as UML class diagram.](images/domain_model.png)
 
@@ -29,7 +31,7 @@ Below is the Onion Architecture diagram.
 ![Illustration of the _Chirp!_ architecture as onion architecture diagram.](images/onion_architecture.png)
 
 ### Chirp.Core
-Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag, CheepHashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
+Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
 
 ### Chirp.Infrastructure
 Chirp.Infrastructure depends on Chirp.Core and contains implementations of its interfaces. It consists of two layers:
