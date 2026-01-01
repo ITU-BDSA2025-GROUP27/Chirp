@@ -171,6 +171,36 @@ Open a browser and navigate to `http://localhost:5273`. The application should b
 
 ## How to run test suite locally
 
+The test suite requires Playwright for UI and End-to-End tests. Install Playwright browsers:
+
+```bash
+pwsh test/Chirp.Playwright.Tests/bin/Debug/net8.0/playwright.ps1 install
+```
+
+Run all tests:
+
+```bash
+dotnet test
+```
+
+### Tests
+
+**Unit Tests** (Chirp.Razor.Tests):
+- Repository tests (AuthorRepository, CheepRepository, HashtagRepository)
+- Service tests (CheepService)
+- Helper tests (CheepTextHelper)
+
+**Integration Tests** (Chirp.Razor.Tests):
+- Follow functionality
+- Hashtag functionality
+- Razor Page rendering
+
+**End-to-End/UI Tests** (Chirp.Playwright.Tests):
+- About Me page functionality
+- Forget Me functionality
+- Hashtag page interactions
+- General UI interactions
+
 # Ethics
 
 ## License
