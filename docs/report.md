@@ -1,9 +1,8 @@
 ---
 title: _Chirp!_ Project Report
-subtitle: ITU BDSA 2025 Group `<no>`
+subtitle: ITU BDSA 2025 Group `27`
 author:
-- "Helge Pfeiffer <ropf@itu.dk>"
-- "Adrian Hoff <adho@itu.dk>"
+- "Lukas Schultz Stryg <luss@itu.dk>"
 numbersections: true
 ---
 
@@ -11,7 +10,13 @@ numbersections: true
 
 ## Domain model
 
-Here comes a description of our domain model.
+The Author class inherits from IdentityUser (ASP.NET Core Identity) for authentication. We have added AuthorId, Cheeps collection, and Following/Followers collections.
+
+The Cheep class has CheepId, Text (with 160 characters constraint), TimeStamp, and reference to Author.
+
+The Hashtag class has HashtagId and TagName (with 50 characters constraint, unique).
+
+The many-to-many relationships are handled by two join tables: CheepHashtag (linking Cheeps and Hashtags) and AuthorFollows (linking Authors for the follow feature).
 
 ![Illustration of the _Chirp!_ data model as UML class diagram.](docs/images/domain_model.png)
 
