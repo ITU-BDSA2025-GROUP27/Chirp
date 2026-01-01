@@ -22,9 +22,9 @@ The many-to-many relationships are handled by two join tables: CheepHashtag (lin
 
 ## Architecture — In the small
 
-Our application follows the Onion Architecture pattern, where each layer depends only on inner layers.
+The application follows the Onion Architecture pattern, where each layer depends only on inner layers.
 
-Below is the Onion Architecture diagram of our application.
+Below is the Onion Architecture diagram.
 
 ![Illustration of the _Chirp!_ application as Onion Architecture.](images/onion_architecture.png)
 
@@ -44,6 +44,12 @@ Contains repository implementations (AuthorRepository, CheepRepository, HashtagR
 Chirp.Web is the outermost layer. It contains the Razor Pages that render the UI and their corresponding page models. It depends on Chirp.Infrastructure.
 
 ## Architecture of deployed application
+
+The application follows a client-server architecture. Users access it through a web browser that communicates with the server over HTTPS.
+
+The server is deployed to Azure App Service. It uses a SQLite database and supports user authentication through both email+password and GitHub OAuth.
+
+![Deployment architecture diagram](images/deployment_architecture.png)
 
 ## User activities
 
