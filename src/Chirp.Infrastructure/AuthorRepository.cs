@@ -12,6 +12,7 @@ public class AuthorRepository : IAuthorRepository
         _dbContext = dbContext;
     }
 
+    /// <inheritdoc />
     public async Task<AuthorDTO?> FindAuthorByName(string name)
     {
         var author = await _dbContext.Authors
@@ -20,6 +21,7 @@ public class AuthorRepository : IAuthorRepository
         return author != null ? new AuthorDTO(author.UserName!) : null;
     }
 
+    /// <inheritdoc />
     public async Task<AuthorDTO?> FindAuthorByEmail(string email)
     {
         var author = await _dbContext.Authors
@@ -28,6 +30,7 @@ public class AuthorRepository : IAuthorRepository
         return author != null ? new AuthorDTO(author.UserName!) : null;
     }
 
+    /// <inheritdoc />
     public async Task<bool> IsFollowing(string followerName, string followedName)
     {
         var follower = await _dbContext.Authors
@@ -39,6 +42,7 @@ public class AuthorRepository : IAuthorRepository
         return follower.Following.Any(a => a.UserName == followedName);
     }
 
+    /// <inheritdoc />
     public async Task<List<AuthorDTO>> GetFollowing(string authorName)
     {
         var query = (from author in _dbContext.Authors
@@ -50,12 +54,14 @@ public class AuthorRepository : IAuthorRepository
         return result;
     }
 
+    /// <inheritdoc />
     public async Task CreateAuthor(Author author)
     {
         _dbContext.Authors.Add(author);
         await _dbContext.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task FollowAuthor(string followerName, string followedName)
     {
         var follower = await _dbContext.Authors
@@ -77,6 +83,7 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
+    /// <inheritdoc />
     public async Task UnfollowAuthor(string followerName, string followedName)
     {
         var follower = await _dbContext.Authors

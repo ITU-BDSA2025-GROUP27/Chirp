@@ -13,26 +13,31 @@ public class CheepService : ICheepService
         _authorRepository = authorRepository;
     }
 
+    /// <inheritdoc />
     public List<CheepDTO> GetCheeps(int page = 1)
     {
         return _cheepRepository.GetCheeps(page).Result;
     }
 
+    /// <inheritdoc />
     public List<CheepDTO> GetCheepsFromAuthor(string author, int page = 1)
     {
         return _cheepRepository.GetCheepsByAuthor(author, page).Result;
     }
 
+    /// <inheritdoc />
     public List<CheepDTO> GetCheepsFromAuthors(List<string> authors, int page = 1)
     {
         return _cheepRepository.GetCheepsByAuthors(authors, page).Result;
     }
 
+    /// <inheritdoc />
     public List<CheepDTO> GetCheepsByHashtag(string tagName, int page = 1)
     {
         return _cheepRepository.GetCheepsByHashtag(tagName, page).Result;
     }
 
+    /// <inheritdoc />
     public async Task CreateCheep(string authorName, string authorEmail, string text)
     {
         // Service orchestrates: find or create author

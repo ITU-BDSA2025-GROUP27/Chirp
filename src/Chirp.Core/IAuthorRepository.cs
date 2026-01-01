@@ -1,5 +1,8 @@
 namespace Chirp.Core;
 
+/// <summary>
+/// Data access for authors and their follow relationships.
+/// </summary>
 public interface IAuthorRepository
 {
     // Queries

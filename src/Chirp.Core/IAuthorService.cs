@@ -1,5 +1,8 @@
 namespace Chirp.Core;
 
+/// <summary>
+/// Business logic for author follow/unfollow functionality.
+/// </summary>
 public interface IAuthorService
 {
     Task<bool> IsFollowing(string followerName, string followedName);
