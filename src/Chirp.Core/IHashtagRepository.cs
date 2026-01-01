@@ -6,7 +6,15 @@ namespace Chirp.Core;
 public interface IHashtagRepository
 {
     // Queries
+
+    /// <summary>
+    /// Finds a hashtag by its name.
+    /// </summary>
     Task<Hashtag?> FindHashtagByName(string tagName);
+
+    /// <summary>
+    /// Gets all hashtags associated with a specific cheep.
+    /// </summary>
     Task<List<HashtagDTO>> GetHashtagsForCheep(int cheepId);
 
     /// <summary>
@@ -15,6 +23,14 @@ public interface IHashtagRepository
     Task<List<string>> GetHashtagNamesInText(string text);
 
     // Commands
+
+    /// <summary>
+    /// Creates a new hashtag.
+    /// </summary>
     Task<Hashtag> CreateHashtag(string tagName);
+
+    /// <summary>
+    /// Links a cheep to a hashtag.
+    /// </summary>
     Task LinkCheepToHashtag(int cheepId, int hashtagId);
 }

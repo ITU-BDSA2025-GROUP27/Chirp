@@ -5,9 +5,24 @@ namespace Chirp.Core;
 /// </summary>
 public interface ICheepService
 {
+    /// <summary>
+    /// Gets all cheeps across the application.
+    /// </summary>
     List<CheepDTO> GetCheeps(int page = 1);
+
+    /// <summary>
+    /// Gets cheeps from a specific author.
+    /// </summary>
     List<CheepDTO> GetCheepsFromAuthor(string author, int page = 1);
+
+    /// <summary>
+    /// Gets cheeps from multiple authors - used for displaying a user's timeline with their followed authors.
+    /// </summary>
     List<CheepDTO> GetCheepsFromAuthors(List<string> authors, int page = 1);
+
+    /// <summary>
+    /// Gets cheeps containing a specific hashtag.
+    /// </summary>
     List<CheepDTO> GetCheepsByHashtag(string tagName, int page = 1);
 
     /// <summary>
