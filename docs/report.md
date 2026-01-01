@@ -207,4 +207,6 @@ dotnet test
 
 ## License
 
+The project uses the MIT License. This license was chosen for its simplicity and compatibility with dependencies.
+
 ## LLMs, ChatGPT, CoPilot, and others
