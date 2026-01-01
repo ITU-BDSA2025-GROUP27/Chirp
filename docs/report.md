@@ -197,16 +197,19 @@ dotnet test
 ### Tests
 
 **Unit Tests** (Chirp.Razor.Tests):
+
 - Repository tests (AuthorRepository, CheepRepository, HashtagRepository)
 - Service tests (CheepService)
 - Helper tests (CheepTextHelper)
 
 **Integration Tests** (Chirp.Razor.Tests):
+
 - Follow functionality
 - Hashtag functionality
 - Razor Page rendering
 
 **End-to-End/UI Tests** (Chirp.Playwright.Tests):
+
 - About Me page functionality
 - Forget Me functionality
 - Hashtag page interactions
