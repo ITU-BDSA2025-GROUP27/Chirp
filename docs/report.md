@@ -22,6 +22,27 @@ The many-to-many relationships are handled by two join tables: CheepHashtag (lin
 
 ## Architecture — In the small
 
+Our application follows the Onion Architecture pattern, where each layer depends only on inner layers.
+
+Below is the Onion Architecture diagram of our application.
+
+![Illustration of the _Chirp!_ application as Onion Architecture.](TODO)
+
+### Chirp.Core
+Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag, CheepHashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
+
+### Chirp.Infrastructure
+Chirp.Infrastructure contains implementations of the interfaces defined in Chirp.Core. It consists of two layers:
+
+- **Services:**
+Contains service implementations (AuthorService, CheepService) that orchestrate business logic between the presentation and repository layers.
+
+- **Repositories:**
+Contains repository implementations (AuthorRepository, CheepRepository, HashtagRepository), the database context (ChirpDBContext), and EF Core migrations for managing SQLite database interactions.
+
+### Chirp.Web
+Chirp.Web is the outermost layer. It contains the Razor Pages, that render the user interface and their corresponding page models. It depends on Chirp.Core and accesses Infrastructure implementations through dependency injection.
+
 ## Architecture of deployed application
 
 ## User activities
