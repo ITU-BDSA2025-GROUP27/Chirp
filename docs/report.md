@@ -90,6 +90,26 @@ The sequence diagram shows the flow when a client requests the Public Timeline. 
 
 ## Build, test, release, and deployment
 
+The application uses GitHub Actions workflows for automated build, test, release, and deployment.
+
+### Build and Test
+
+Triggered on push to main or Pull Request. The workflow checks out the code, sets up .NET, restores dependencies, builds the project, installs Playwright browsers, and runs tests.
+
+![Illustration of the build and test workflow as UML activity diagram.](images/build_and_test_workflow.png)
+
+### Release
+
+Triggered on tag v*. The workflow builds and tests the application, then publishes for Windows, macOS, and Linux in parallel. ZIP files are created and attached to a release with the version tag.
+
+![Illustration of the release workflow as UML activity diagram.](images/release_workflow.png)
+
+### Deploy to Azure
+
+Triggered on push to main. The workflow has two jobs: Build (checkout, setup, build, publish, upload artifact) and Deploy (download artifact, login to Azure, deploy to Azure App Service).
+
+![Illustration of the Azure deployment workflow as UML activity diagram.](images/azure_deploy_workflow.png)
+
 ## Team work
 
 ## How to make _Chirp!_ work locally
