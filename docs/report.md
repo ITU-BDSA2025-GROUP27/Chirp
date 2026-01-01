@@ -24,14 +24,12 @@ A Cheep can have multiple Hashtags, and a Hashtag can be associated with multipl
 
 ## Architecture — In the small
 
-The application follows the Onion Architecture pattern, where each layer depends only on inner layers.
-
-Below is the Onion Architecture diagram.
+The application follows the onion architecture pattern, where each layer depends only on inner layers.
 
 ![Illustration of the _Chirp!_ architecture as onion architecture diagram.](images/onion_architecture.png){ width=95% }
 
 ### Chirp.Core
-Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag) and Data Transfer Objects (DTO's). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
+Chirp.Core is the innermost layer and contains the domain entities (Author, Cheep, Hashtag) and Data Transfer Objects (DTOs). It defines the interfaces for both services (ICheepService, IAuthorService), and repositories (ICheepRepository, IAuthorRepository, IHashtagRepository). This layer has no external dependencies.
 
 ### Chirp.Infrastructure
 Chirp.Infrastructure depends on Chirp.Core and contains implementations of its interfaces. It consists of two layers:
@@ -65,6 +63,8 @@ To access the rest of the application, they must either log in with an existing 
 
 ![Illustration of unauthenticated user activities as UML activity diagram.](images/unauthenticated_user_activity.png){ width=95% }
 
+\clearpage
+
 ### Authenticated users
 
 - View the Public Timeline with all cheeps
@@ -82,11 +82,13 @@ To access the rest of the application, they must either log in with an existing 
 
 ![Illustration of authenticated user activities as UML activity diagram.](images/authenticated_user_activity.png){ width=95% }
 
-## Sequence of functionality/calls trough _Chirp!_
+## Sequence of functionality/calls through _Chirp!_
 
 The sequence diagram shows the flow when a client requests the Public Timeline. It illustrates how the HTTP request is processed through Azure App Service, Routing, PublicModel, CheepService, CheepRepository, EF Core, and the SQLite database, then returned as rendered HTML.
 
 ![Illustration of the request flow through _Chirp!_ as UML sequence diagram.](images/sequence_diagram.png){ width=95% }
+
+\clearpage
 
 # Process
 
@@ -96,13 +98,13 @@ The application uses GitHub Actions workflows for automated build, test, release
 
 ### Build and Test
 
-Triggered on push to main or Pull Request. The workflow checks out the code, sets up .NET, restores dependencies, builds the project, installs Playwright browsers, and runs tests.
+Triggered on push to main or on Pull Requests. The workflow checks out the code, sets up .NET, restores dependencies, builds the project, installs Playwright browsers, and runs tests.
 
 ![Illustration of the build and test workflow as UML activity diagram.](images/build_and_test_workflow.png){ width=60% }
 
 ### Release
 
-Triggered on tag v*. The workflow builds and tests the application, then publishes for Windows, macOS, and Linux in parallel. ZIP files are created and attached to a release with the version tag.
+Triggered when a tag matching v* is pushed. The workflow builds and tests the application, then publishes for Windows, macOS, and Linux in parallel. ZIP files are created and attached to a release with the version tag.
 
 ![Illustration of the release workflow as UML activity diagram.](images/release_workflow.png){ width=70% }
 
@@ -111,6 +113,8 @@ Triggered on tag v*. The workflow builds and tests the application, then publish
 Triggered on push to main. The workflow has two jobs: Build (checkout, setup, build, publish, upload artifact) and Deploy (download artifact, login to Azure, deploy to Azure App Service).
 
 ![Illustration of the Azure deployment workflow as UML activity diagram.](images/azure_deploy_workflow.png){ width=70% }
+
+\clearpage
 
 ## Team work
 
@@ -124,6 +128,8 @@ All required functionality has been implemented.
 Issues are created with the format: `Session <number> - <description>`. The issue body contains a user story at the top following the format `"In order to <receive benefit> as a <role>, I can <goal/desire>"`, followed by acceptance criteria below.
 
 A branch is created using the naming convention `<type>/<description>`, where type is `feature/`, `refactor/`, or `docs/` depending on the issue type. This follows trunk-based development with short-lived feature branches. When a feature is complete, a pull request is created that needs to pass the Build and Test workflow to be merged to main. Usually reviewers would be assigned to the pull request, but as I work alone, I was allowed by TAs to merge without having to review my own pull requests. Once merged, the branch is deleted.
+
+\clearpage
 
 ## How to make _Chirp!_ work locally
 
@@ -162,6 +168,7 @@ dotnet run --project src/Chirp.Web
 ```
 
 The application will:
+
 - Restore dependencies
 - Apply migrations
 - Seed the database with initial data
@@ -170,6 +177,8 @@ The application will:
 ### Access the Application
 
 Open a browser and navigate to `http://localhost:5273`. The application should be running with the public timeline visible.
+
+\clearpage
 
 ## How to run test suite locally
 
@@ -202,8 +211,6 @@ dotnet test
 - Forget Me functionality
 - Hashtag page interactions
 - General UI interactions
-
-\newpage
 
 # Ethics
 
