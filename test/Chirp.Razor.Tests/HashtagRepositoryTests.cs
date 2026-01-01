@@ -114,12 +114,10 @@ public class HashtagRepositoryTests
         var hashtag2 = new Hashtag { TagName = "hashtag2" };
 
         context.Authors.Add(author);
-        context.Cheeps.Add(cheep);
         context.Hashtags.AddRange(hashtag1, hashtag2);
-        await context.SaveChangesAsync();
-
-        context.CheepHashtags.Add(new CheepHashtag { CheepId = cheep.CheepId, HashtagId = hashtag1.HashtagId });
-        context.CheepHashtags.Add(new CheepHashtag { CheepId = cheep.CheepId, HashtagId = hashtag2.HashtagId });
+        cheep.Hashtags.Add(hashtag1);
+        cheep.Hashtags.Add(hashtag2);
+        context.Cheeps.Add(cheep);
         await context.SaveChangesAsync();
 
         IHashtagRepository repository = new HashtagRepository(context);
@@ -367,9 +365,11 @@ public class HashtagRepositoryTests
         await repository.LinkCheepToHashtag(cheep.CheepId, hashtag.HashtagId);
 
         // Assert
-        var link = await context.CheepHashtags
-            .FirstOrDefaultAsync(ch => ch.CheepId == cheep.CheepId && ch.HashtagId == hashtag.HashtagId);
-        Assert.NotNull(link);
+        var cheepWithHashtags = await context.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstOrDefaultAsync(c => c.CheepId == cheep.CheepId);
+        Assert.NotNull(cheepWithHashtags);
+        Assert.Contains(cheepWithHashtags.Hashtags, h => h.HashtagId == hashtag.HashtagId);
     }
 
     [Fact]
@@ -411,9 +411,11 @@ public class HashtagRepositoryTests
         await repository.LinkCheepToHashtag(cheep.CheepId, hashtag.HashtagId);
 
         // Assert - Should only have one link
-        var links = await context.CheepHashtags
-            .Where(ch => ch.CheepId == cheep.CheepId && ch.HashtagId == hashtag.HashtagId)
-            .ToListAsync();
-        Assert.Single(links);
+        var cheepWithHashtags = await context.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstOrDefaultAsync(c => c.CheepId == cheep.CheepId);
+        Assert.NotNull(cheepWithHashtags);
+        var linkCount = cheepWithHashtags.Hashtags.Count(h => h.HashtagId == hashtag.HashtagId);
+        Assert.Equal(1, linkCount);
     }
 }
