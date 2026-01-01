@@ -14,6 +14,7 @@ public class CheepRepository : ICheepRepository
         _hashtagRepository = hashtagRepository;
     }
 
+    /// <inheritdoc />
     public async Task<List<CheepDTO>> GetCheeps(int page)
     {
         var query = (from cheep in _dbContext.Cheeps
@@ -29,6 +30,7 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CheepDTO>> GetCheepsByAuthor(string author, int page)
     {
         var query = (from cheep in _dbContext.Cheeps
@@ -45,6 +47,7 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CheepDTO>> GetCheepsByAuthors(List<string> authors, int page)
     {
         var query = (from cheep in _dbContext.Cheeps
@@ -61,6 +64,7 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CheepDTO>> GetCheepsByHashtag(string tagName, int page)
     {
         var normalizedTag = tagName.ToLowerInvariant();
@@ -80,6 +84,7 @@ public class CheepRepository : ICheepRepository
         return result;
     }
 
+    /// <inheritdoc />
     public async Task CreateCheep(string authorName, string text)
     {
         var author = await _dbContext.Authors

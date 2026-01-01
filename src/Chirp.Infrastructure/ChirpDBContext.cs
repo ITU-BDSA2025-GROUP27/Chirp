@@ -19,21 +19,25 @@ public class ChirpDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure many-to-many relationship for author following
         modelBuilder.Entity<Author>()
             .HasMany(a => a.Following)
             .WithMany(a => a.Followers)
             .UsingEntity(j => j.ToTable("AuthorFollows"));
 
+        // Configure one-to-many relationship between authors and cheeps with cascade delete
         modelBuilder.Entity<Author>()
             .HasMany(a => a.Cheeps)
             .WithOne(c => c.Author)
             .HasForeignKey(c => c.AuthorId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // Configure unique index on hashtag names
         modelBuilder.Entity<Hashtag>()
             .HasIndex(h => h.TagName)
             .IsUnique();
 
+        // Configure many-to-many relationship between cheeps and hashtags
         modelBuilder.Entity<Cheep>()
             .HasMany(c => c.Hashtags)
             .WithMany(h => h.Cheeps)

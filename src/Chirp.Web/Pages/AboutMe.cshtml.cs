@@ -8,6 +8,9 @@ using System.Security.Claims;
 
 namespace Chirp.Web.Pages;
 
+/// <summary>
+/// User information page.
+/// </summary>
 [Authorize]
 public class AboutMeModel : PageModel
 {

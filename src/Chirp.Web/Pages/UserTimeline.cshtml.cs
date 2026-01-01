@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Web.Pages;
 
+/// <summary>
+/// User timeline - shows user's own cheeps and cheeps from authors they follow if viewing own timeline.
+/// </summary>
 public class UserTimelineModel : PageModel
 {
     private readonly ICheepService _cheepService;
     private readonly IAuthorService _authorService;
+
     public required List<CheepDTO> Cheeps { get; set; }
     public HashSet<string> Following { get; set; } = new();
     public PaginationViewModel Pagination { get; set; } = new();

@@ -13,6 +13,7 @@ public class HashtagRepository : IHashtagRepository
         _dbContext = dbContext;
     }
 
+    /// <inheritdoc />
     public async Task<Hashtag?> FindHashtagByName(string tagName)
     {
         var normalizedTag = tagName.ToLowerInvariant();
@@ -20,6 +21,7 @@ public class HashtagRepository : IHashtagRepository
             .FirstOrDefaultAsync(h => h.TagName == normalizedTag);
     }
 
+    /// <inheritdoc />
     public async Task<List<HashtagDTO>> GetHashtagsForCheep(int cheepId)
     {
         var cheep = await _dbContext.Cheeps
@@ -34,6 +36,7 @@ public class HashtagRepository : IHashtagRepository
         return cheep.Hashtags.Select(h => new HashtagDTO(h.TagName)).ToList();
     }
 
+    /// <inheritdoc />
     public async Task<List<string>> GetHashtagNamesInText(string text)
     {
         // Extract hashtags using regex: #[a-zA-Z0-9]+
@@ -57,6 +60,7 @@ public class HashtagRepository : IHashtagRepository
         return await Task.FromResult(hashtags.ToList());
     }
 
+    /// <inheritdoc />
     public async Task<Hashtag> CreateHashtag(string tagName)
     {
         var normalizedTag = tagName.ToLowerInvariant();
@@ -72,6 +76,7 @@ public class HashtagRepository : IHashtagRepository
         return hashtag;
     }
 
+    /// <inheritdoc />
     public async Task LinkCheepToHashtag(int cheepId, int hashtagId)
     {
         var cheep = await _dbContext.Cheeps
