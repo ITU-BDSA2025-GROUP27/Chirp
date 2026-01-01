@@ -44,9 +44,11 @@ public class HashtagIntegrationTests
         var cheeps = await context.Cheeps.ToListAsync();
         Assert.Single(cheeps);
 
-        var link = await context.CheepHashtags
-            .FirstOrDefaultAsync(ch => ch.CheepId == cheeps[0].CheepId && ch.HashtagId == hashtag.HashtagId);
-        Assert.NotNull(link);
+        var cheepWithHashtags = await context.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstOrDefaultAsync(c => c.CheepId == cheeps[0].CheepId);
+        Assert.NotNull(cheepWithHashtags);
+        Assert.Contains(cheepWithHashtags.Hashtags, h => h.HashtagId == hashtag.HashtagId);
     }
 
     [Fact]
@@ -86,9 +88,10 @@ public class HashtagIntegrationTests
         Assert.Contains(hashtags, h => h.TagName == "hashtag3");
 
         // Assert - Cheep is linked to all three hashtags
-        var cheep = await context.Cheeps.FirstAsync();
-        var links = await context.CheepHashtags.Where(ch => ch.CheepId == cheep.CheepId).ToListAsync();
-        Assert.Equal(3, links.Count);
+        var cheepWithHashtags = await context.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstAsync();
+        Assert.Equal(3, cheepWithHashtags.Hashtags.Count);
     }
 
     [Fact]
@@ -130,8 +133,11 @@ public class HashtagIntegrationTests
         var cheeps = await context.Cheeps.ToListAsync();
         Assert.Equal(3, cheeps.Count);
 
-        var links = await context.CheepHashtags.Where(ch => ch.HashtagId == hashtags[0].HashtagId).ToListAsync();
-        Assert.Equal(3, links.Count);
+        var hashtagWithCheeps = await context.Hashtags
+            .Include(h => h.Cheeps)
+            .FirstOrDefaultAsync(h => h.HashtagId == hashtags[0].HashtagId);
+        Assert.NotNull(hashtagWithCheeps);
+        Assert.Equal(3, hashtagWithCheeps.Cheeps.Count);
     }
 
     [Fact]
@@ -363,9 +369,10 @@ public class HashtagIntegrationTests
         Assert.Single(hashtags);
 
         // Assert - Cheep is linked only once to the hashtag
-        var cheep = await context.Cheeps.FirstAsync();
-        var links = await context.CheepHashtags.Where(ch => ch.CheepId == cheep.CheepId).ToListAsync();
-        Assert.Single(links);
+        var cheepWithHashtags = await context.Cheeps
+            .Include(c => c.Hashtags)
+            .FirstAsync();
+        Assert.Single(cheepWithHashtags.Hashtags);
     }
 
     [Fact]

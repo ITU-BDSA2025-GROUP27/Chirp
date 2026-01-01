@@ -33,17 +33,6 @@ public class HashtagPageTests : PageTest
             .Where(a => a.Email != null && _testUserEmails.Contains(a.Email))
             .Include(a => a.Cheeps)
             .ToListAsync();
-
-        // Get all cheep IDs from test users
-        var testCheepIds = testAuthors.SelectMany(a => a.Cheeps).Select(c => c.CheepId).ToList();
-
-        // Remove CheepHashtag links
-        var cheepHashtags = await context.CheepHashtags
-            .Where(ch => testCheepIds.Contains(ch.CheepId))
-            .ToListAsync();
-        context.CheepHashtags.RemoveRange(cheepHashtags);
-
-        // Remove their cheeps first (foreign key constraint)
         foreach (var author in testAuthors)
         {
             context.Cheeps.RemoveRange(author.Cheeps);
